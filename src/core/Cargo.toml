@@ -1,0 +1,32 @@
+[package]
+name = "typst-math-transpiler-core"
+version = "0.1.0"
+authors = ["André Dal Bosco <andredbsc@gmail.com>"]
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = ["console_error_panic_hook"]
+
+[dependencies]
+typst = { git = "https://github.com/typst/typst.git", tag = "v0.8.0" }
+typst-library = { git = "https://github.com/typst/typst.git", tag = "v0.8.0" }
+typst-syntax = { git = "https://github.com/typst/typst.git", tag = "v0.8.0" }
+wasm-bindgen = "0.2.84"
+serde = { version = "1.0", features = ["derive"] }
+serde-wasm-bindgen = "0.4"
+console_error_panic_hook = { version = "0.1.7", optional = true }
+js-sys = "0.3.64"
+phf = "0.11.2"
+serde_json = "1.0.108"
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.34"
+
+[profile.release]
+opt-level = "s"
+
+[lib.metadata.wasm-pack.profile.release]
+wasm-opt = ["-Oz"]
