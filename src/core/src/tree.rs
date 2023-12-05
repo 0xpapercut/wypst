@@ -77,12 +77,14 @@ impl ExprVisitor for NodeConverter<'_> {
 
     fn visit_math(&mut self, expr: &typst::syntax::ast::Math) -> Node {
         let exprs: Vec<_> = expr.exprs().filter(|x| !self.math_expr_filter.contains(&x.to_untyped().kind())).collect();
-        let nodes = exprs.iter().map(|expr_| {
-            match expr_.accept(self) {
-                Node::Node(node) => node,
-                Node::Array(_) => panic!("Array not expected inside another array in a KaTeX parse tree."),
+        let mut nodes = Vec::new();
+        for expr_ in exprs {
+            let node = expr_.accept(self);
+            match node {
+                Node::Node(node_) => nodes.push(node_),
+                Node::Array(array) => nodes.extend(array),
             }
-        }).collect();
+        }
         Node::Array(nodes)
     }
 
