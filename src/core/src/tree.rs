@@ -12,7 +12,7 @@ use crate::utils::*;
 pub fn convert_expr(root: typst::syntax::ast::Expr) -> Node {
     let module = build().math;
     let scope = module.scope();
-    let mut converter = NodeConverter {
+    let mut converter = TypstToKatexConverter {
         scope: scope,
         mode: katex::Mode::Math,
         math_expr_filter: [
@@ -52,10 +52,13 @@ impl Node {
 }
 
 #[derive(Clone)]
-pub struct NodeConverter<'a> {
+pub struct TypstToKatexConverter<'a> {
     pub scope: &'a typst::eval::Scope,
     pub mode: katex::Mode,
     pub math_expr_filter: Vec<typst::syntax::SyntaxKind>,
+}
+
+pub trait ContentVisitor {
 }
 
 pub trait ExprVisitor {
@@ -68,7 +71,7 @@ pub trait ExprVisitor {
     fn visit_math_attach(&mut self, expr: &typst::syntax::ast::MathAttach) -> Node;
 }
 
-impl ExprVisitor for NodeConverter<'_> {
+impl ExprVisitor for TypstToKatexConverter<'_> {
     fn visit_text(&mut self, expr: &typst::syntax::ast::Text) -> Node {
         // Suppose the text expression is made of a single character
         let c = expr.get().chars().next().unwrap();
