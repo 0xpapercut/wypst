@@ -75,54 +75,55 @@ pub enum Node {
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Array {
-    mode: Mode,
-    loc: Option<SourceLocation>,
-    col_separation_type: Option<ColSeparationType>,
-    hskip_before_and_after: Option<bool>,
-    add_jot: Option<bool>,
-    cols: Option<Vec<AlignSpec>>,
-    arraystretch: f32,
-    body: NodeArray2D,
-    row_gaps: Vec<Option<Measurement>>,
-    h_lines_before_row: Vec<Vec<bool>>,
-    tags: Option<Vec<TagType>>,
-    leqno: Option<bool>,
+    pub mode: Mode,
+    pub loc: Option<SourceLocation>,
+    pub col_separation_type: Option<ColSeparationType>,
+    pub hskip_before_and_after: Option<bool>,
+    pub add_jot: Option<bool>,
+    pub cols: Option<Vec<AlignSpec>>,
+    pub arraystretch: f32,
+    pub body: NodeArray2D,
+    pub row_gaps: Vec<Option<Measurement>>,
+    pub h_lines_before_row: Vec<Vec<bool>>,
+    pub tags: Option<Vec<TagType>>,
+    pub leqno: Option<bool>,
     #[serde(rename = "isCD")]
-    is_cd: Option<bool>,
+    pub is_cd: Option<bool>,
 }
 
 #[derive(Clone, Serialize)]
 pub struct CdLabel {
-    mode: Mode,
-    loc: Option<SourceLocation>,
-    side: String,
-    label: Box<Node>,
+    pub mode: Mode,
+    pub loc: Option<SourceLocation>,
+    pub side: String,
+    pub label: Box<Node>,
 }
 
 #[derive(Clone, Serialize)]
  pub struct CdLabelParent {
-    mode: Mode,
-    loc: Option<SourceLocation>,
-    side: String,
-    label: Box<Node>,
+    pub mode: Mode,
+    pub loc: Option<SourceLocation>,
+    pub side: String,
+    pub label: Box<Node>,
  }
 
  #[derive(Clone, Serialize)]
 pub struct Color {
-    mode: Mode,
-    loc: Option<SourceLocation>,
-    color: String,
-    body: NodeArray,
+    pub mode: Mode,
+    pub loc: Option<SourceLocation>,
+    pub color: String,
+    pub body: NodeArray,
 }
 
 #[derive(Clone, Serialize)]
 pub struct ColorToken {
-    mode: Mode,
-    loc: Option<SourceLocation>,
-    color: String
+    pub mode: Mode,
+    pub loc: Option<SourceLocation>,
+    pub color: String,
 }
 
 #[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Op { // TODO Validation
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
