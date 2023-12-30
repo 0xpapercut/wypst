@@ -91,39 +91,47 @@ impl<'a> Symbol {
     }
 
     pub fn get(mode: Mode, name: char) -> Symbol {
+        // Some work arounds since the auto generated code doesn't work perfectly.
+        let math_text = "0123456789/@.\"";
+        if math_text.contains(name) && mode == Mode::Math {
+            return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), name);
+        }
+        // if name == '≔' && mode == Mode::Math {
+        //     return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::OpToken), name);
+        // }
         //// --- AUTO GENERATED CODE --- ////
         if mode == Mode::Math && name == '≡' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≡'); }
         if mode == Mode::Math && name == '≺' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≺'); }
         if mode == Mode::Math && name == '≻' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≻'); }
-        if mode == Mode::Math && name == '∼' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '∼'); }
-        if mode == Mode::Math && name == '⊥' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⊥'); }
+        if mode == Mode::Math && name == '∼' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '∼'); }
+        if mode == Mode::Math && name == '⊥' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '⊥'); }
         if mode == Mode::Math && name == '⪯' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⪯'); }
         if mode == Mode::Math && name == '⪰' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⪰'); }
         if mode == Mode::Math && name == '≃' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≃'); }
-        if mode == Mode::Math && name == '∣' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '∣'); }
+        if mode == Mode::Math && name == '∣' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '∣'); }
         if mode == Mode::Math && name == '≪' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≪'); }
         if mode == Mode::Math && name == '≫' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≫'); }
         if mode == Mode::Math && name == '≍' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≍'); }
-        if mode == Mode::Math && name == '∥' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '∥'); }
+        if mode == Mode::Math && name == '∥' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '∥'); }
         if mode == Mode::Math && name == '⋈' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⋈'); }
-        if mode == Mode::Math && name == '⌣' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⌣'); }
+        if mode == Mode::Math && name == '⌣' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⌣'); }
         if mode == Mode::Math && name == '⊑' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⊑'); }
         if mode == Mode::Math && name == '⊒' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⊒'); }
         if mode == Mode::Math && name == '≐' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≐'); }
-        if mode == Mode::Math && name == '⌢' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⌢'); }
+        if mode == Mode::Math && name == '⌢' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⌢'); }
         if mode == Mode::Math && name == '∋' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '∋'); }
-        if mode == Mode::Math && name == '∝' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '∝'); }
+        if mode == Mode::Math && name == '∝' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '∝'); }
         if mode == Mode::Math && name == '⊢' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⊢'); }
         if mode == Mode::Math && name == '⊣' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⊣'); }
-        if mode == Mode::Math && name == '.' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Punct), '.'); }
-        if mode == Mode::Math && name == '⋅' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Punct), '⋅'); }
+        if mode == Mode::Math && name == '.' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '.'); }
+        if mode == Mode::Math && name == '⋅' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Bin), '⋅'); }
         if mode == Mode::Math && name == '#' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '#'); }
         if mode == Mode::Text && name == '#' { return Symbol::new(Mode::Text, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '#'); }
-        if mode == Mode::Math && name == '&' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '&'); }
+        if mode == Mode::Math && name == '&' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Bin), '&'); }
         if mode == Mode::Text && name == '&' { return Symbol::new(Mode::Text, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '&'); }
         if mode == Mode::Math && name == 'ℵ' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'ℵ'); }
         if mode == Mode::Math && name == '∀' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '∀'); }
-        if mode == Mode::Math && name == 'ℏ' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'ℏ'); }
+        if mode == Mode::Math && name == 'ℏ' { return Symbol::new(Mode::Math, Font::Ams, Group::NonAtom(NonAtomGroup::TextOrd), 'ℏ'); }
         if mode == Mode::Math && name == '∃' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '∃'); }
         if mode == Mode::Math && name == '∇' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '∇'); }
         if mode == Mode::Math && name == '♭' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '♭'); }
@@ -141,9 +149,9 @@ impl<'a> Symbol {
         if mode == Mode::Text && name == '§' { return Symbol::new(Mode::Text, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '§'); }
         if mode == Mode::Math && name == '¶' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '¶'); }
         if mode == Mode::Text && name == '¶' { return Symbol::new(Mode::Text, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '¶'); }
-        if mode == Mode::Math && name == '†' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '†'); }
+        if mode == Mode::Math && name == '†' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Bin), '†'); }
         if mode == Mode::Text && name == '†' { return Symbol::new(Mode::Text, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '†'); }
-        if mode == Mode::Math && name == '‡' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '‡'); }
+        if mode == Mode::Math && name == '‡' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Bin), '‡'); }
         if mode == Mode::Text && name == '‡' { return Symbol::new(Mode::Text, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '‡'); }
         if mode == Mode::Math && name == '⎱' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Close), '⎱'); }
         if mode == Mode::Math && name == '⎰' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Open), '⎰'); }
@@ -232,16 +240,16 @@ impl<'a> Symbol {
         if mode == Mode::Math && name == '⪵' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⪵'); }
         if mode == Mode::Math && name == '⪶' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⪶'); }
         if mode == Mode::Math && name == '' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), ''); }
-        if mode == Mode::Math && name == '⊴' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '⊴'); }
-        if mode == Mode::Math && name == '⊵' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '⊵'); }
+        if mode == Mode::Math && name == '⊴' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⊴'); }
+        if mode == Mode::Math && name == '⊵' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⊵'); }
         if mode == Mode::Math && name == '↚' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '↚'); }
         if mode == Mode::Math && name == '↛' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '↛'); }
         if mode == Mode::Math && name == '⇍' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⇍'); }
         if mode == Mode::Math && name == '⇏' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⇏'); }
         if mode == Mode::Math && name == '↮' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '↮'); }
         if mode == Mode::Math && name == '⇎' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⇎'); }
-        if mode == Mode::Math && name == '△' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '△'); }
-        if mode == Mode::Math && name == '▽' { return Symbol::new(Mode::Math, Font::Ams, Group::NonAtom(NonAtomGroup::TextOrd), '▽'); }
+        if mode == Mode::Math && name == '△' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Bin), '△'); }
+        if mode == Mode::Math && name == '▽' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Bin), '▽'); }
         if mode == Mode::Math && name == '◊' { return Symbol::new(Mode::Math, Font::Ams, Group::NonAtom(NonAtomGroup::TextOrd), '◊'); }
         if mode == Mode::Math && name == 'Ⓢ' { return Symbol::new(Mode::Math, Font::Ams, Group::NonAtom(NonAtomGroup::TextOrd), 'Ⓢ'); }
         if mode == Mode::Math && name == '®' { return Symbol::new(Mode::Math, Font::Ams, Group::NonAtom(NonAtomGroup::TextOrd), '®'); }
@@ -300,8 +308,8 @@ impl<'a> Symbol {
         if mode == Mode::Math && name == '⋞' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⋞'); }
         if mode == Mode::Math && name == '≾' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≾'); }
         if mode == Mode::Math && name == '⪷' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⪷'); }
-        if mode == Mode::Math && name == '⊲' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⊲'); }
-        if mode == Mode::Math && name == '⊨' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⊨'); }
+        if mode == Mode::Math && name == '⊲' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '⊲'); }
+        if mode == Mode::Math && name == '⊨' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '⊨'); }
         if mode == Mode::Math && name == '⊪' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⊪'); }
         if mode == Mode::Math && name == '≏' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≏'); }
         if mode == Mode::Math && name == '≎' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≎'); }
@@ -318,7 +326,7 @@ impl<'a> Symbol {
         if mode == Mode::Math && name == '≖' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≖'); }
         if mode == Mode::Math && name == '≗' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≗'); }
         if mode == Mode::Math && name == '≜' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≜'); }
-        if mode == Mode::Math && name == '≈' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≈'); }
+        if mode == Mode::Math && name == '≈' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≈'); }
         if mode == Mode::Math && name == '⫆' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⫆'); }
         if mode == Mode::Math && name == '⋑' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⋑'); }
         if mode == Mode::Math && name == '⊐' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⊐'); }
@@ -326,7 +334,7 @@ impl<'a> Symbol {
         if mode == Mode::Math && name == '⋟' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⋟'); }
         if mode == Mode::Math && name == '≿' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≿'); }
         if mode == Mode::Math && name == '⪸' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⪸'); }
-        if mode == Mode::Math && name == '⊳' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⊳'); }
+        if mode == Mode::Math && name == '⊳' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '⊳'); }
         if mode == Mode::Math && name == '⊩' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⊩'); }
         if mode == Mode::Math && name == '≬' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≬'); }
         if mode == Mode::Math && name == '⋔' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '⋔'); }
@@ -337,7 +345,7 @@ impl<'a> Symbol {
         if mode == Mode::Math && name == '∵' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '∵'); }
         if mode == Mode::Math && name == '≂' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Rel), '≂'); }
         if mode == Mode::Math && name == '∔' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '∔'); }
-        if mode == Mode::Math && name == '∖' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '∖'); }
+        if mode == Mode::Math && name == '∖' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Bin), '∖'); }
         if mode == Mode::Math && name == '⋒' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '⋒'); }
         if mode == Mode::Math && name == '⋓' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '⋓'); }
         if mode == Mode::Math && name == '⩞' { return Symbol::new(Mode::Math, Font::Ams, Group::Atom(AtomGroup::Bin), '⩞'); }
@@ -407,22 +415,22 @@ impl<'a> Symbol {
         if mode == Mode::Math && name == 'Φ' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'Φ'); }
         if mode == Mode::Math && name == 'Ψ' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'Ψ'); }
         if mode == Mode::Math && name == 'Ω' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'Ω'); }
-        if mode == Mode::Math && name == 'A' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'A'); }
-        if mode == Mode::Math && name == 'B' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'B'); }
-        if mode == Mode::Math && name == 'E' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'E'); }
-        if mode == Mode::Math && name == 'Z' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'Z'); }
-        if mode == Mode::Math && name == 'H' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'H'); }
-        if mode == Mode::Math && name == 'I' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'I'); }
-        if mode == Mode::Math && name == 'K' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'K'); }
-        if mode == Mode::Math && name == 'M' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'M'); }
-        if mode == Mode::Math && name == 'N' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'N'); }
-        if mode == Mode::Math && name == 'O' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'O'); }
-        if mode == Mode::Math && name == 'P' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'P'); }
-        if mode == Mode::Math && name == 'T' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'T'); }
-        if mode == Mode::Math && name == 'X' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'X'); }
+        if mode == Mode::Math && name == 'A' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'A'); }
+        if mode == Mode::Math && name == 'B' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'B'); }
+        if mode == Mode::Math && name == 'E' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'E'); }
+        if mode == Mode::Math && name == 'Z' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'Z'); }
+        if mode == Mode::Math && name == 'H' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'H'); }
+        if mode == Mode::Math && name == 'I' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'I'); }
+        if mode == Mode::Math && name == 'K' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'K'); }
+        if mode == Mode::Math && name == 'M' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'M'); }
+        if mode == Mode::Math && name == 'N' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'N'); }
+        if mode == Mode::Math && name == 'O' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'O'); }
+        if mode == Mode::Math && name == 'P' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'P'); }
+        if mode == Mode::Math && name == 'T' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'T'); }
+        if mode == Mode::Math && name == 'X' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'X'); }
         if mode == Mode::Math && name == '¬' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '¬'); }
         if mode == Mode::Math && name == '⊤' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '⊤'); }
-        if mode == Mode::Math && name == '∅' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '∅'); }
+        if mode == Mode::Math && name == '∅' { return Symbol::new(Mode::Math, Font::Ams, Group::NonAtom(NonAtomGroup::TextOrd), '∅'); }
         if mode == Mode::Math && name == 'α' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'α'); }
         if mode == Mode::Math && name == 'β' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'β'); }
         if mode == Mode::Math && name == 'γ' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'γ'); }
@@ -604,16 +612,16 @@ impl<'a> Symbol {
         if mode == Mode::Text && name == '£' { return Symbol::new(Mode::Text, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '£'); }
         if mode == Mode::Math && name == '✠' { return Symbol::new(Mode::Math, Font::Ams, Group::NonAtom(NonAtomGroup::TextOrd), '✠'); }
         if mode == Mode::Text && name == '✠' { return Symbol::new(Mode::Text, Font::Ams, Group::NonAtom(NonAtomGroup::TextOrd), '✠'); }
-        if mode == Mode::Math && name == '0' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '0'); }
-        if mode == Mode::Math && name == '1' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '1'); }
-        if mode == Mode::Math && name == '2' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '2'); }
-        if mode == Mode::Math && name == '3' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '3'); }
-        if mode == Mode::Math && name == '4' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '4'); }
-        if mode == Mode::Math && name == '5' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '5'); }
-        if mode == Mode::Math && name == '6' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '6'); }
-        if mode == Mode::Math && name == '7' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '7'); }
-        if mode == Mode::Math && name == '8' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '8'); }
-        if mode == Mode::Math && name == '9' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '9'); }
+        if mode == Mode::Math && name == '0' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '0'); }
+        if mode == Mode::Math && name == '1' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '1'); }
+        if mode == Mode::Math && name == '2' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '2'); }
+        if mode == Mode::Math && name == '3' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '3'); }
+        if mode == Mode::Math && name == '4' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '4'); }
+        if mode == Mode::Math && name == '5' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '5'); }
+        if mode == Mode::Math && name == '6' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '6'); }
+        if mode == Mode::Math && name == '7' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '7'); }
+        if mode == Mode::Math && name == '8' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '8'); }
+        if mode == Mode::Math && name == '9' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), '9'); }
         if mode == Mode::Math && name == '/' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '/'); }
         if mode == Mode::Math && name == '@' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '@'); }
         if mode == Mode::Math && name == '"' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), '"'); }
@@ -740,6 +748,6 @@ impl<'a> Symbol {
         if mode == Mode::Math && name == 'þ' { return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::MathOrd), 'þ'); }
         if mode == Mode::Text && name == 'þ' { return Symbol::new(Mode::Text, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), 'þ'); }
         //// --------------------------- ////
-        panic!();
+        return Symbol::new(mode, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), name);
     }
 }

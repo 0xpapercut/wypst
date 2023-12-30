@@ -14,6 +14,7 @@ pub enum Mode {
 #[derive(Clone, Serialize, PartialEq)]
 #[serde(rename_all = "lowercase")]
 pub enum ColSeparationType { // TODO
+    Align,
     AlignAt,
     Gather,
     Small,
@@ -31,21 +32,21 @@ pub enum AlignSpec {
 
 #[derive(Clone, Serialize)]
 pub struct Separator {
-    separator: String,
+    pub separator: String,
 }
 
 #[derive(Clone, Serialize)]
 pub struct Align {
-    align: String,
-    pregap: Option<f32>,
-    postgap: Option<f32>,
+    pub align: String,
+    pub pregap: Option<f32>,
+    pub postgap: Option<f32>,
 }
 
 // Reference: units.js
 #[derive(Clone, Serialize)]
 pub struct Measurement {
-    number: f32,
-    unit: String,
+    pub number: f32,
+    pub unit: String,
 }
 
 #[derive(Clone, Serialize)]
@@ -90,8 +91,8 @@ pub enum GenFracSizeType {
 // Reference: Token.js
 #[derive(Clone, Serialize)]
 pub struct Token {
-    text: String,
-    loc: Option<SourceLocation>,
-    noexpand: Option<bool>,
-    treat_as_relax: Option<bool>,
+    pub text: String,
+    pub loc: Option<SourceLocation>,
+    pub noexpand: Option<bool>,
+    pub treat_as_relax: Option<bool>,
 }

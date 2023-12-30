@@ -2,6 +2,7 @@
 
 use std::collections::HashMap;
 use serde::Serialize;
+use derive_builder::Builder;
 use crate::katex::types::*;
 use crate::katex::source::SourceLocation;
 use crate::katex::symbol;
@@ -72,6 +73,12 @@ pub enum Node {
     XArrow(XArrow),
 }
 
+impl std::fmt::Debug for Node {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", serde_json::to_value(&self).unwrap())
+    }
+}
+
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Array {
@@ -99,13 +106,13 @@ pub struct CdLabel {
     pub label: Box<Node>,
 }
 
-#[derive(Clone, Serialize)]
- pub struct CdLabelParent {
+#[derive(Clone, Serialize, Builder)]
+pub struct CdLabelParent {
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
     pub side: String,
     pub label: Box<Node>,
- }
+}
 
  #[derive(Clone, Serialize)]
 pub struct Color {
@@ -564,4 +571,74 @@ pub struct XArrow {
     pub label: String,
     pub body: Box<Node>,
     pub below: Option<Box<Node>>
+}
+
+impl Array {
+    pub fn default() -> Self {
+        Self {
+            mode: Mode::Math,
+            loc: None,
+            col_separation_type: None,
+            hskip_before_and_after: None,
+            add_jot: None,
+            cols: None,
+            arraystretch: 1.0,
+            body: Vec::new(),
+            row_gaps: Vec::new(),
+            h_lines_before_row: Vec::new(),
+            tags: None,
+            leqno: None,
+            is_cd: None
+        }
+    }
+}
+
+impl Styling {
+    pub fn default() -> Self {
+        Self {
+            mode: Mode::Math,
+            loc: None,
+            style: StyleStr::Display,
+            body: Vec::new(),
+        }
+    }
+}
+
+impl Cr {
+    pub fn default() -> Self {
+        Self {
+            mode: Mode::Math,
+            loc: None,
+            new_line: true,
+            size: None,
+        }
+    }
+}
+
+impl OrdGroup {
+    pub fn default() -> Self {
+        Self {
+            mode: Mode::Math,
+            loc: None,
+            body: Vec::new(),
+            semisimple: None,
+        }
+    }
+}
+
+impl GenFrac {
+    pub fn default(numer: Node, denom: Node) -> Self {
+        Self {
+            mode: Mode::Math,
+            loc: None,
+            continued: false,
+            numer: Box::new(numer),
+            denom: Box::new(denom),
+            has_bar_line: true,
+            left_delim: None,
+            right_delim: None,
+            size: GenFracSizeType::Auto,
+            bar_size: None,
+        }
+    }
 }
