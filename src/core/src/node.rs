@@ -8,6 +8,15 @@ pub enum Node {
     Array(katex::NodeArray),
 }
 
+impl std::fmt::Debug for Node {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Node::Node(node) => write!(f, "{:?}", node),
+            Node::Array(array) => write!(f, "{:?}", array),
+        }
+    }
+}
+
 impl Node {
     pub fn as_node(self) -> Result<katex::Node, &'static str> {
         match self {
@@ -28,12 +37,10 @@ impl Node {
             Node::Array(array) => array,
         }
     }
+
+    pub fn join(&mut self, node: Node) {
+        let mut arr = self.clone().as_array();
+        arr.append(&mut node.as_array());
+        *self = Node::Array(arr);
+    }
 }
-
-// pub struct AlignExpressionToArray {
-
-// }
-
-// impl AlignToArray {
-
-// }
