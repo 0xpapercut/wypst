@@ -3,10 +3,15 @@ use serde_wasm_bindgen::to_value;
 use serde_json;
 use typst;
 
-mod tree;
+mod converter;
 mod katex;
 mod utils;
 mod node;
+mod content;
+
+#[macro_use]
+extern crate derive_builder;
+
 
 #[wasm_bindgen]
 pub fn parse_tree(expression: &str) -> JsValue {
@@ -14,24 +19,14 @@ pub fn parse_tree(expression: &str) -> JsValue {
     console_error_panic_hook::set_once();
     let mut world = utils::FakeWorld::new();
     let content = utils::eval(&world, expression);
-    // let math: &typst::math::EquationElem = content.to::<typst::math::EquationElem>().unwrap();
-    // let katex_tree = tree::convert(math.body());
-    let katex_tree = tree::convert(&content);
-    // let typst_tree = typst::syntax::parse_math(expression);
-    // let katex_tree = tree::convert_expr(typst_tree.cast().unwrap());
+    let katex_tree = converter::convert(&content);
     to_value(&katex_tree).unwrap()
 }
 
 pub fn convert(content: &typst::foundations::Content) -> serde_json::Value {
-    let katex_tree = tree::convert(content);
+    let katex_tree = converter::convert(content);
     serde_json::to_value(&katex_tree).unwrap()
 }
-
-// pub fn parse_tree_json(expression: &str) -> serde_json::Value {
-//     let typst_tree = typst::syntax::parse_math(expression);
-//     let katex_tree = tree::convert(typst_tree.cast().unwrap());
-//     serde_json::to_value(&katex_tree).unwrap()
-// }
 
 #[cfg(debug_assertions)]
 #[wasm_bindgen]

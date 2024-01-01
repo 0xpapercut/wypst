@@ -1,10 +1,12 @@
+/// Reference: parseNode.js
+
+use std::collections::HashMap;
+use serde::Serialize;
+use derive_builder::Builder;
+use typst::foundations::Style;
+use crate::katex::types::*;
 use crate::katex::source::SourceLocation;
 use crate::katex::symbol;
-use crate::katex::types::*;
-use derive_builder::Builder;
-use serde::Serialize;
-/// Reference: parseNode.js
-use std::collections::HashMap;
 
 pub type NodeArray = Vec<Node>;
 pub type NodeArray2D = Vec<Vec<Node>>;
@@ -126,7 +128,7 @@ pub struct CdLabelParent {
     pub label: Box<Node>,
 }
 
-#[derive(Clone, Serialize)]
+ #[derive(Clone, Serialize)]
 pub struct Color {
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
@@ -143,8 +145,7 @@ pub struct ColorToken {
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Op {
-    // TODO Validation
+pub struct Op { // TODO Validation
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
     pub limits: bool,
@@ -189,7 +190,6 @@ pub struct Styling {
     pub mode: Mode,
     #[builder(default)]
     pub loc: Option<SourceLocation>,
-
     pub style: StyleStr,
     #[builder(default = "Vec::new()")]
     pub body: NodeArray,
@@ -212,12 +212,16 @@ pub struct Tag {
     pub tag: NodeArray,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 pub struct Text {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
+    #[builder(default = "Vec::new()")]
     pub body: NodeArray,
-    pub font: Option<String>,
+    #[builder(default)]
+    pub font: Option<String>
 }
 
 #[derive(Clone, Serialize)]
@@ -326,7 +330,7 @@ pub struct Enclose {
     pub label: String,
     pub background_color: Option<String>,
     pub border_color: Option<String>,
-    pub body: Box<Node>,
+    pub body:Box<Node>
 }
 
 #[derive(Clone, Serialize)]
@@ -449,6 +453,7 @@ pub struct Lap {
     pub body: Box<Node>,
 }
 
+
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LeftRight {
@@ -562,7 +567,7 @@ pub struct Sizing {
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
     pub size: f32,
-    pub body: NodeArray,
+    pub body: NodeArray
 }
 
 #[derive(Clone, Serialize)]

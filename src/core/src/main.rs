@@ -74,7 +74,7 @@ fn eval(world: &dyn World, string: &str) -> typst::foundations::Content {
 
 pub fn main() {
     let mut world = FakeWorld::new();
-    let content = eval(&world, "x + 2");
+    let content = eval(&world, "x + y");
     let math: &typst::math::EquationElem = content.to::<typst::math::EquationElem>().unwrap();
     println!("{:#?}", math);
     println!("{:#?}", convert(&content));
