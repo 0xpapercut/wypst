@@ -1,12 +1,11 @@
-/// Reference: parseNode.js
-
-use std::collections::HashMap;
-use serde::Serialize;
-use derive_builder::Builder;
-use typst::foundations::Style;
-use crate::katex::types::*;
 use crate::katex::source::SourceLocation;
 use crate::katex::symbol;
+use crate::katex::types::*;
+use derive_builder::Builder;
+use serde::Serialize;
+/// Reference: parseNode.js
+use std::collections::HashMap;
+use typst::foundations::Style;
 
 pub type NodeArray = Vec<Node>;
 pub type NodeArray2D = Vec<Vec<Node>>;
@@ -81,6 +80,7 @@ impl std::fmt::Debug for Node {
 }
 
 #[derive(Clone, Serialize, Builder)]
+#[builder(setter(into))]
 #[serde(rename_all = "camelCase")]
 pub struct Array {
     #[builder(default = "Mode::Math")]
@@ -128,7 +128,7 @@ pub struct CdLabelParent {
     pub label: Box<Node>,
 }
 
- #[derive(Clone, Serialize)]
+#[derive(Clone, Serialize)]
 pub struct Color {
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
@@ -145,7 +145,8 @@ pub struct ColorToken {
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Op { // TODO Validation
+pub struct Op {
+    // TODO Validation
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
     pub limits: bool,
@@ -195,12 +196,17 @@ pub struct Styling {
     pub body: NodeArray,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 pub struct SupSub {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
+    #[builder(default)]
     pub base: Option<Box<Node>>,
+    #[builder(default)]
     pub sup: Option<Box<Node>>,
+    #[builder(default)]
     pub sub: Option<Box<Node>>,
 }
 
@@ -221,7 +227,7 @@ pub struct Text {
     #[builder(default = "Vec::new()")]
     pub body: NodeArray,
     #[builder(default)]
-    pub font: Option<String>
+    pub font: Option<String>,
 }
 
 #[derive(Clone, Serialize)]
@@ -330,7 +336,7 @@ pub struct Enclose {
     pub label: String,
     pub background_color: Option<String>,
     pub border_color: Option<String>,
-    pub body:Box<Node>
+    pub body: Box<Node>,
 }
 
 #[derive(Clone, Serialize)]
@@ -341,9 +347,11 @@ pub struct Environment {
     pub name_group: Box<Node>,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 pub struct Font {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
     pub font: String,
     pub body: Box<Node>,
@@ -453,15 +461,17 @@ pub struct Lap {
     pub body: Box<Node>,
 }
 
-
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 #[serde(rename_all = "camelCase")]
 pub struct LeftRight {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
     pub body: NodeArray,
     pub left: String,
     pub right: String,
+    #[builder(default)]
     pub right_color: Option<String>,
 }
 
@@ -567,7 +577,7 @@ pub struct Sizing {
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
     pub size: f32,
-    pub body: NodeArray
+    pub body: NodeArray,
 }
 
 #[derive(Clone, Serialize)]
@@ -644,3 +654,76 @@ impl ArrayBuilder {
     //     }
     // }
 }
+
+macro_rules! into_node {
+    ($($t:ident),*) => {
+        $(
+            impl $t {
+                pub fn into_node(self) -> Node {
+                    Node::$t(self)
+                }
+            }
+        )*
+    };
+}
+
+into_node!(
+    Array,
+    CdLabel,
+    CdLabelParent,
+    Color,
+    ColorToken,
+    Op,
+    OrdGroup,
+    Raw,
+    Size,
+    Styling,
+    SupSub,
+    Tag,
+    Text,
+    Url,
+    Verb,
+    Atom,
+    MathOrd,
+    Spacing,
+    TextOrd,
+    AccentToken,
+    OpToken,
+    Accent,
+    AccentUnder,
+    Cr,
+    DelimSizing,
+    Enclose,
+    Environment,
+    Font,
+    GenFrac,
+    HBox,
+    HorizBrace,
+    HRef,
+    Html,
+    HtmlMathML,
+    IncludeGraphics,
+    Infix,
+    Internal,
+    Kern,
+    Lap,
+    LeftRight,
+    LeftRightRight,
+    MathChoice,
+    Middle,
+    MClass,
+    OperatorName,
+    Overline,
+    Phantom,
+    HPhantom,
+    VPhantom,
+    Pmb,
+    RaiseBox,
+    Rule,
+    Sizing,
+    Smash,
+    Sqrt,
+    Underline,
+    VCenter,
+    XArrow
+);

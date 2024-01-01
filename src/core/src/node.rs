@@ -31,7 +31,7 @@ impl Node {
         }
     }
 
-    pub fn as_array(self) -> katex::NodeArray {
+pub fn as_array(self) -> katex::NodeArray {
         match self {
             Node::Node(node) => vec![node.clone()],
             Node::Array(array) => array,
