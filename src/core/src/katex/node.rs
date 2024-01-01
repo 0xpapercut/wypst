@@ -1,11 +1,10 @@
-/// Reference: parseNode.js
-
-use std::collections::HashMap;
-use serde::Serialize;
-use derive_builder::Builder;
-use crate::katex::types::*;
 use crate::katex::source::SourceLocation;
 use crate::katex::symbol;
+use crate::katex::types::*;
+use derive_builder::Builder;
+use serde::Serialize;
+/// Reference: parseNode.js
+use std::collections::HashMap;
 
 pub type NodeArray = Vec<Node>;
 pub type NodeArray2D = Vec<Vec<Node>>;
@@ -79,21 +78,34 @@ impl std::fmt::Debug for Node {
     }
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 #[serde(rename_all = "camelCase")]
 pub struct Array {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
+    #[builder(default)]
     pub col_separation_type: Option<ColSeparationType>,
+    #[builder(default)]
     pub hskip_before_and_after: Option<bool>,
+    #[builder(default)]
     pub add_jot: Option<bool>,
+    #[builder(default)]
     pub cols: Option<Vec<AlignSpec>>,
+    #[builder(default = "1.0")]
     pub arraystretch: f32,
+    #[builder(default = "Vec::new()")]
     pub body: NodeArray2D,
+    #[builder(default = "Vec::new()")]
     pub row_gaps: Vec<Option<Measurement>>,
+    #[builder(default = "Vec::new()")]
     pub h_lines_before_row: Vec<Vec<bool>>,
+    #[builder(default)]
     pub tags: Option<Vec<TagType>>,
+    #[builder(default)]
     pub leqno: Option<bool>,
+    #[builder(default)]
     #[serde(rename = "isCD")]
     pub is_cd: Option<bool>,
 }
@@ -114,7 +126,7 @@ pub struct CdLabelParent {
     pub label: Box<Node>,
 }
 
- #[derive(Clone, Serialize)]
+#[derive(Clone, Serialize)]
 pub struct Color {
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
@@ -131,7 +143,8 @@ pub struct ColorToken {
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Op { // TODO Validation
+pub struct Op {
+    // TODO Validation
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
     pub limits: bool,
@@ -143,11 +156,15 @@ pub struct Op { // TODO Validation
     pub body: Option<NodeArray>,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 pub struct OrdGroup {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
+    #[builder(default = "Vec::new()")]
     pub body: NodeArray,
+    #[builder(default)]
     pub semisimple: Option<bool>,
 }
 
@@ -166,11 +183,15 @@ pub struct Size {
     pub is_blank: bool,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 pub struct Styling {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
+
     pub style: StyleStr,
+    #[builder(default = "Vec::new()")]
     pub body: NodeArray,
 }
 
@@ -196,7 +217,7 @@ pub struct Text {
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
     pub body: NodeArray,
-    pub font: Option<String>
+    pub font: Option<String>,
 }
 
 #[derive(Clone, Serialize)]
@@ -277,11 +298,15 @@ pub struct AccentUnder {
     pub base: Box<Node>,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 pub struct Cr {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
+    #[builder(default = "true")]
     pub new_line: bool,
+    #[builder(default)]
     pub size: Option<Measurement>,
 }
 
@@ -301,7 +326,7 @@ pub struct Enclose {
     pub label: String,
     pub background_color: Option<String>,
     pub border_color: Option<String>,
-    pub body:Box<Node>
+    pub body: Box<Node>,
 }
 
 #[derive(Clone, Serialize)]
@@ -320,19 +345,27 @@ pub struct Font {
     pub body: Box<Node>,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
 #[serde(rename_all = "camelCase")]
 pub struct GenFrac {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
+    #[builder(default = "false")]
     pub continued: bool,
     pub numer: Box<Node>,
     pub denom: Box<Node>,
+    #[builder(default = "true")]
     pub has_bar_line: bool,
+    #[builder(default)]
     pub left_delim: Option<String>,
+    #[builder(default)]
     pub right_delim: Option<String>,
+    #[builder(default = "GenFracSizeType::Auto")]
     pub size: GenFracSizeType,
-    pub bar_size: Option<Measurement>
+    #[builder(default)]
+    pub bar_size: Option<Measurement>,
 }
 
 #[derive(Clone, Serialize)]
@@ -415,7 +448,6 @@ pub struct Lap {
     pub alignment: String,
     pub body: Box<Node>,
 }
-
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -530,7 +562,7 @@ pub struct Sizing {
     pub mode: Mode,
     pub loc: Option<SourceLocation>,
     pub size: f32,
-    pub body: NodeArray
+    pub body: NodeArray,
 }
 
 #[derive(Clone, Serialize)]
@@ -570,75 +602,40 @@ pub struct XArrow {
     pub loc: Option<SourceLocation>,
     pub label: String,
     pub body: Box<Node>,
-    pub below: Option<Box<Node>>
+    pub below: Option<Box<Node>>,
 }
 
-impl Array {
-    pub fn default() -> Self {
-        Self {
-            mode: Mode::Math,
-            loc: None,
-            col_separation_type: None,
-            hskip_before_and_after: None,
-            add_jot: None,
-            cols: None,
-            arraystretch: 1.0,
-            body: Vec::new(),
-            row_gaps: Vec::new(),
-            h_lines_before_row: Vec::new(),
-            tags: None,
-            leqno: None,
-            is_cd: None
-        }
+impl ArrayBuilder {
+    /// Adds a new row to the `Array` node.
+    pub fn next_row(&mut self) {
+        self.body.as_mut().unwrap().push(Vec::new());
     }
-}
 
-impl Styling {
-    pub fn default() -> Self {
-        Self {
-            mode: Mode::Math,
-            loc: None,
-            style: StyleStr::Display,
-            body: Vec::new(),
-        }
+    /// Adds a `Node` to the current row of the `Array` node.
+    pub fn push_node(&mut self, node: Node) {
+        self.body.as_mut().unwrap().last_mut().unwrap().push(node);
     }
-}
 
-impl Cr {
-    pub fn default() -> Self {
-        Self {
-            mode: Mode::Math,
-            loc: None,
-            new_line: true,
-            size: None,
-        }
+    /// Encloses a `NodeArray` inside a `Styling` node before adding to the current row.
+    pub fn push_node_array(&mut self, nodes: NodeArray, mode: Mode, style: StyleStr) {
+        let styling = StylingBuilder::default()
+            .mode(mode)
+            .style(style)
+            .body(nodes)
+            .build()
+            .unwrap();
+        let node = Node::Styling(styling);
+        self.body.as_mut().unwrap().last_mut().unwrap().push(node);
     }
-}
 
-impl OrdGroup {
-    pub fn default() -> Self {
-        Self {
-            mode: Mode::Math,
-            loc: None,
-            body: Vec::new(),
-            semisimple: None,
-        }
+    pub fn count_columns(&mut self) -> usize {
+        return self.body.iter().map(|row| row.len()).max().unwrap_or(0);
     }
-}
 
-impl GenFrac {
-    pub fn default(numer: Node, denom: Node) -> Self {
-        Self {
-            mode: Mode::Math,
-            loc: None,
-            continued: false,
-            numer: Box::new(numer),
-            denom: Box::new(denom),
-            has_bar_line: true,
-            left_delim: None,
-            right_delim: None,
-            size: GenFracSizeType::Auto,
-            bar_size: None,
-        }
-    }
+    // pub fn build_flattened(&mut self) {
+    //     let mut nodes: NodeArray = Vec::new();
+    //     for styling in self.body {
+
+    //     }
+    // }
 }

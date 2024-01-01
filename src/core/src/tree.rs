@@ -2,13 +2,13 @@ use serde::Serialize;
 
 use typst;
 use typst::foundations::NativeElement;
-use typst_syntax::ast::AstNode;
 use typst::Library;
+use typst_syntax::ast::AstNode;
 
 use crate::katex;
 use crate::log;
-use crate::utils::*;
 use crate::node::*;
+use crate::utils::*;
 
 use wasm_bindgen::prelude::*;
 
@@ -33,130 +33,6 @@ pub struct TypstToKatexConverter<'a> {
     pub styles: typst::foundations::StyleChain<'a>,
 }
 
-pub struct SequenceToKatexConverter<'a> {
-    pub sequence: &'a typst::foundations::Content,
-    pub converter: TypstToKatexConverter<'a>,
-    pub is_aligned: bool,
-    pub is_array: bool,
-    pub rows: Vec<Vec<Node>>,
-}
-
-impl<'a> SequenceToKatexConverter<'a> {
-    pub fn new(sequence: &'a typst::foundations::Content, converter: TypstToKatexConverter<'a>) -> Self {
-        Self {
-            sequence,
-            converter,
-            is_aligned: false,
-            is_array: false,
-            rows: Vec::new(),
-        }
-    }
-
-    pub fn convert(&mut self) -> Node {
-        self.add_row();
-        for elem in self.sequence.to_sequence().unwrap() {
-            if elem.is::<typst::math::AlignPointElem>() {
-                self.set_align_point();
-            }
-            if elem.is::<typst::text::LinebreakElem>() {
-                self.set_linebreak();
-                continue;
-            }
-            let node = elem.accept(&mut self.converter);
-            println!("\n\n{:#?}", elem);
-            println!("- produces -");
-            println!("{:#?}\n\n", node);
-            self.push(node);
-        }
-        if self.rows.iter().all(|row| row.len() <= 1) {
-            let mut array: katex::NodeArray = Vec::new();
-            for (i, row) in self.rows.iter().enumerate() {
-                for elem in row {
-                    array.extend(elem.clone().as_array());
-                }
-                if i < self.rows.len() - 1 {
-                    let cr = katex::Cr::default();
-                    array.push(katex::Node::Cr(cr));
-                }
-            }
-            return Node::Array(array);
-        }
-        // Treat object as an array.
-        let mut body: katex::NodeArray2D = Vec::new();
-        for row in &self.rows {
-            body.push(Vec::new());
-            for elem in row {
-                let mut styling = katex::Styling::default();
-                if self.is_aligned {
-                    let mut ordgroup = katex::OrdGroup::default();
-                    ordgroup.body = elem.clone().as_array();
-                    styling.body = [katex::Node::OrdGroup(ordgroup)].to_vec();
-                } else {
-                    styling.body = elem.clone().as_array();
-                }
-                body.last_mut().unwrap().push(katex::Node::Styling(styling));
-            }
-        }
-        let mut array = katex::Array::default();
-        array.body = body;
-        if self.is_aligned {
-            let mut cols: Vec<katex::AlignSpec> = Vec::new();
-            for i in 0..self.count_columns() {
-                let align = katex::Align {
-                    align: if i % 2 == 0 { "r".to_string() } else { "l".to_string() },
-                    pregap: if i > 1 && i % 2 == 0 { Some(1f32) } else { Some(0f32) },
-                    postgap: Some(0f32),
-                };
-                cols.push(katex::AlignSpec::Align(align));
-            }
-            array.cols = Some(cols);
-            array.h_lines_before_row = vec![Vec::new(); self.rows.len() + 1];
-            array.add_jot = Some(true);
-            array.col_separation_type = Some(katex::ColSeparationType::Align);
-            array.leqno = Some(false);
-        }
-        Node::Node(katex::Node::Array(array))
-    }
-
-    pub fn push(&mut self, node: Node) {
-        if self.is_current_row_empty() {
-            self.add_row_element();
-        }
-        let row = self.get_current_row();
-
-        row.last_mut().unwrap().join(node);
-    }
-
-    pub fn add_row(&mut self) {
-        self.rows.push(Vec::new());
-    }
-
-    pub fn add_row_element(&mut self) {
-        self.rows.last_mut().unwrap().push(Node::Array(Vec::new()));
-    }
-
-    pub fn is_current_row_empty(&self) -> bool {
-        self.rows.last().unwrap().is_empty()
-    }
-
-    pub fn get_current_row(&mut self) -> &mut Vec<Node> {
-        self.rows.last_mut().unwrap()
-    }
-
-    pub fn set_linebreak(&mut self) {
-        self.add_row();
-    }
-
-    pub fn set_align_point(&mut self) {
-        self.is_aligned = true;
-        self.add_row_element();
-    }
-
-    pub fn count_columns(&self) -> usize {
-        self.rows.iter().map(|row| row.len()).max().unwrap_or(0)
-    }
-}
-
 pub trait ContentVisitor {
     fn visit_equation(&mut self, content: &typst::foundations::Content) -> Node;
     fn visit_sequence(&mut self, content: &typst::foundations::Content) -> Node;
@@ -172,7 +48,6 @@ pub trait ContentVisitor {
     fn visit_vec(&mut self, content: &typst::foundations::Content) -> Node;
     fn visit_mat(&mut self, content: &typst::foundations::Content) -> Node;
     fn visit_op(&mut self, content: &typst::foundations::Content) -> Node;
-
 }
 
 impl ContentVisitor for TypstToKatexConverter<'_> {
@@ -192,6 +67,7 @@ impl ContentVisitor for TypstToKatexConverter<'_> {
     fn visit_vec(&mut self, content: &typst::foundations::Content) -> Node {
         let elem = content.to::<typst::math::VecElem>().unwrap();
         let delim = elem.delim(self.styles).unwrap();
+        let nodes = elem.children().iter().map(|e| e.accept(self));
         unimplemented!()
     }
 
@@ -209,11 +85,13 @@ impl ContentVisitor for TypstToKatexConverter<'_> {
             body: elem.denom().accept(self).as_array(),
             semisimple: None,
         });
-        Node::Node(katex::Node::GenFrac(katex::GenFrac::default(numer, denom)))
+        unimplemented!()
+        // Node::Node(katex::Node::GenFrac(katex::GenFrac::default(numer, denom)))
     }
 
     fn visit_align_point(&mut self, content: &typst::foundations::Content) -> Node {
-        Node::Node(katex::Node::OrdGroup(katex::OrdGroup::default()))
+        unimplemented!()
+        // Node::Node(katex::Node::OrdGroup(katex::OrdGroup::default()))
     }
 
     fn visit_linebreak(&mut self, content: &typst::foundations::Content) -> Node {
@@ -221,8 +99,40 @@ impl ContentVisitor for TypstToKatexConverter<'_> {
     }
 
     fn visit_sequence(&mut self, content: &typst::foundations::Content) -> Node {
-        let mut sequence_converter = SequenceToKatexConverter::new(content, self.clone());
-        sequence_converter.convert()
+        let mut builder = katex::ArrayBuilder::default();
+        let mut stack: Vec<Node> = Vec::new();
+        let mut is_aligned: bool = false;
+
+        for elem in content.to_sequence().unwrap() {
+            if elem.is_align_point() || elem.is_linebreak() {
+                let mut styling = katex::StylingBuilder::default()
+                    .style(katex::StyleStr::Display)
+                    .body(stack.iter().map(|n| n.clone().as_node().unwrap()).collect())
+                    .build()
+                    .unwrap();
+                let node = katex::Node::Styling(styling);
+                builder.push_node(node);
+                stack.clear();
+
+                if elem.is_linebreak() {
+                    builder.next_row();
+                }
+                if elem.is_align_point() {
+                    is_aligned = true;
+                }
+            }
+            let node = elem.accept(self);
+            stack.push(node);
+        }
+        let mut styling = katex::StylingBuilder::default()
+            .style(katex::StyleStr::Display)
+            .body(stack.iter().map(|n| n.clone().as_array()).collect())
+            .build()
+            .unwrap();
+        let node = katex::Node::Styling(styling);
+        builder.push_node(node);
+
+        Node::Node(katex::Node::Array(builder.build().unwrap()))
     }
 
     fn visit_space(&mut self, content: &typst::foundations::Content) -> Node {
@@ -236,7 +146,10 @@ impl ContentVisitor for TypstToKatexConverter<'_> {
             let name = text.chars().next().unwrap();
             Node::Node(katex::Symbol::get(self.mode, name).create_node())
         } else {
-            let body = text.chars().map(|name| katex::Symbol::get(katex::Mode::Text, name).create_node()).collect();
+            let body = text
+                .chars()
+                .map(|name| katex::Symbol::get(katex::Mode::Text, name).create_node())
+                .collect();
             Node::Node(katex::Node::Text(katex::Text {
                 mode: self.mode,
                 body,
@@ -320,7 +233,8 @@ impl ContentVisitor for TypstToKatexConverter<'_> {
             Some(typst::math::MathVariant::Bb) => "mathbb",
             None => "mathrm",
             _ => unimplemented!(),
-        }.to_string();
+        }
+        .to_string();
         Node::Node(katex::Node::Font(katex::node::Font {
             mode: self.mode,
             loc: None,
@@ -330,6 +244,7 @@ impl ContentVisitor for TypstToKatexConverter<'_> {
     }
 
     fn visit_h(&mut self, content: &typst::foundations::Content) -> Node {
+        // TODO
         Node::Array(Vec::new())
     }
 }
@@ -353,9 +268,27 @@ impl ContentExt for typst::foundations::Content {
             _ if self.is::<typst::math::FracElem>() => visitor.visit_frac(self),
             _ if self.is::<typst::math::VecElem>() => visitor.visit_vec(self),
             _ if self.is::<typst::math::MatElem>() => visitor.visit_mat(self),
-            _ if self.is::<typst::math::OpElem>() => visitor.visit_mat(self),
+            _ if self.is::<typst::math::OpElem>() => visitor.visit_op(self),
             _ if self.is_sequence() => visitor.visit_sequence(self),
             _ => panic!("Content element `{:#?}` not implemented yet.", self),
         }
+    }
+}
+
+pub trait ContentType {
+    fn is_equation(&self) -> bool;
+    fn is_linebreak(&self) -> bool;
+    fn is_align_point(&self) -> bool;
+}
+
+impl ContentType for typst::foundations::Content {
+    fn is_equation(&self) -> bool {
+        self.is::<typst::math::EquationElem>()
+    }
+    fn is_linebreak(&self) -> bool {
+        self.is::<typst::text::LinebreakElem>()
+    }
+    fn is_align_point(&self) -> bool {
+        self.is::<typst::math::AlignPointElem>()
     }
 }
