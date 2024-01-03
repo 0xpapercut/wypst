@@ -75,7 +75,7 @@ fn eval(world: &dyn World, string: &str) -> typst::foundations::Content {
 pub fn main() {
     // Try to construct a MathContext object.
     let mut world = FakeWorld::new();
-    let content = eval(&world, "vec(1, 2)");
+    let content = eval(&world, "mat(1, 2; 3, 4)");
     let math: &typst::math::EquationElem = content.to::<typst::math::EquationElem>().unwrap();
     println!("{:#?}", math);
     println!("{:#?}", convert(&content));

@@ -7,6 +7,7 @@ mod converter;
 mod katex;
 mod utils;
 mod node;
+mod ext;
 mod content;
 
 #[macro_use]
