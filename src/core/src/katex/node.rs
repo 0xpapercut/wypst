@@ -143,18 +143,27 @@ pub struct ColorToken {
     pub color: String,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
+#[builder(setter(into))]
 #[serde(rename_all = "camelCase")]
 pub struct Op {
     // TODO Validation
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
+    #[builder(default = "true")]
     pub limits: bool,
+    #[builder(default)]
     pub always_handle_sup_sub: Option<bool>,
+    #[builder(default)]
     pub suppress_base_shift: Option<bool>,
+    #[builder(default = "false")]
     pub parent_is_sup_sub: bool,
+    #[builder(default = "false")]
     pub symbol: bool,
     pub name: String,
+    #[builder(default)]
     pub body: Option<NodeArray>,
 }
 
