@@ -620,31 +620,6 @@ pub struct XArrow {
     pub below: Option<Box<Node>>,
 }
 
-impl ArrayBuilder {
-    /// Adds a new row to the `Array` node.
-    pub fn next_row(&mut self) {
-        self.body.as_mut().unwrap().push(Vec::new());
-    }
-
-    /// Adds a `Node` to the current row of the `Array` node.
-    pub fn push_node(&mut self, node: Node) {
-        self.body.as_mut().unwrap().last_mut().unwrap().push(node);
-    }
-
-    pub fn count_columns(&mut self) -> usize {
-        return self.body.iter().map(|row| row.len()).max().unwrap_or(0);
-    }
-
-    /// Map the `Array`'s body nodes.
-    pub fn map_body(&mut self, f: &dyn Fn(&mut Node) -> Node) {
-        for row in self.body.as_mut().unwrap().iter_mut() {
-            for node in row.iter_mut() {
-                *node = f(node);
-            }
-        }
-    }
-}
-
 macro_rules! into_node {
     ($($t:ident),*) => {
         $(
