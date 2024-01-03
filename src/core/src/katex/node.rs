@@ -101,7 +101,7 @@ pub struct Array {
     pub body: NodeArray2D,
     #[builder(default = "Vec::new()")]
     pub row_gaps: Vec<Option<Measurement>>,
-    #[builder(default = "Vec::new()")]
+    #[builder(default = "vec![vec![]]")]
     pub h_lines_before_row: Vec<Vec<bool>>,
     #[builder(default)]
     pub tags: Option<Vec<TagType>>,
