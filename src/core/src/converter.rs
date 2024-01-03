@@ -155,6 +155,16 @@ impl<'a> SequenceConverter<'a> {
     }
 
     pub fn convert(&mut self, visitor: &mut ContentConverter) -> Node {
+        self.process_sequence_elements(visitor);
+
+        if self.count_columns() <= 1 {
+            self.convert_flatten()
+        } else {
+            self.convert_leftright_align()
+        }
+    }
+
+    pub fn process_sequence_elements(&mut self, visitor: &mut ContentConverter) {
         let sequence = self.content.to_sequence().unwrap();
 
         for elem in sequence {
@@ -172,49 +182,6 @@ impl<'a> SequenceConverter<'a> {
             self.stack.push(node);
         }
         self.dump_stack_onto_array();
-
-        if self.is_aligned {
-            println!("Here");
-            self.convert_aligned()
-        } else {
-            println!("Here2");
-            self.convert_flatten()
-        }
-    }
-
-    pub fn convert_flatten(&mut self) -> Node {
-        let nodes = self.array.iter().flatten().map(|n| n.clone().as_array()).flatten();
-        Node::Array(nodes.collect())
-    }
-
-    pub fn convert_aligned(&mut self) -> Node {
-        let mut cols: Vec<katex::AlignSpec> = Vec::new();
-        for i in 0..self.count_columns() {
-            let align = katex::Align {
-                align: if i % 2 == 0 { "r".to_string() } else { "l".to_string() },
-                pregap: if i > 1 && i % 2 == 0 { Some(1f32) } else { Some(0f32) },
-                postgap: Some(0f32),
-            };
-            cols.push(katex::AlignSpec::Align(align));
-        }
-        let body: katex::NodeArray2D = self.array.iter().map(|v| v.iter().map(|n| {
-            let ordgroup = katex::Node::OrdGroup(katex::OrdGroupBuilder::default().body(n.clone().as_array()).build().unwrap());
-            katex::Node::Styling(katex::StylingBuilder::default()
-                .style(katex::StyleStr::Display)
-                .body([ordgroup].to_vec())
-                .build().unwrap()
-            )
-        }).collect()).collect();
-        let h_lines_before_row = vec![Vec::new(); self.array.len() + 1];
-
-        Node::Node(katex::Node::Array(katex::ArrayBuilder::default()
-            .body(body)
-            .h_lines_before_row(h_lines_before_row)
-            .add_jot(true)
-            .leqno(false)
-            .col_separation_type(katex::ColSeparationType::Align)
-            .cols(cols)
-            .build().unwrap()))
     }
 
     pub fn dump_stack_onto_array(&mut self) {
@@ -230,9 +197,61 @@ impl<'a> SequenceConverter<'a> {
         self.array.push(Vec::new())
     }
 
+    pub fn convert_flatten(&mut self) -> Node {
+        let nodes = self.array.iter().flatten().map(|n| n.clone().as_array()).flatten();
+        Node::Array(nodes.collect())
+    }
+
+    pub fn convert_leftright_align(&mut self) -> Node {
+        let body = self.get_array_body();
+        let h_lines_before_row = vec![Vec::new(); self.array.len() + 1];
+        let cols = self.get_cols_leftright_align();
+
+        Node::Node(katex::Node::Array(katex::ArrayBuilder::default()
+            .body(body)
+            .h_lines_before_row(h_lines_before_row)
+            .add_jot(true)
+            .leqno(false)
+            .col_separation_type(katex::ColSeparationType::Align)
+            .cols(cols)
+            .build().unwrap()))
+    }
+
+    pub fn get_array_body(&mut self) -> katex::NodeArray2D {
+        self.array.iter().map(|v| v.iter().map(|n| {
+            let ordgroup = katex::Node::OrdGroup(katex::OrdGroupBuilder::default().body(n.clone().as_array()).build().unwrap());
+            katex::Node::Styling(katex::StylingBuilder::default()
+                .style(katex::StyleStr::Display)
+                .body([ordgroup].to_vec())
+                .build().unwrap()
+            )
+        }).collect()).collect()
+    }
+
+    pub fn get_cols_leftright_align(&mut self) -> Vec<katex::AlignSpec> {
+        let mut cols: Vec<katex::AlignSpec> = Vec::new();
+        for i in 0..self.count_columns() {
+            let align = katex::Align {
+                align: if i % 2 == 0 { "r".to_string() } else { "l".to_string() },
+                pregap: if i > 1 && i % 2 == 0 { Some(1f32) } else { Some(0f32) },
+                postgap: Some(0f32),
+            };
+            cols.push(katex::AlignSpec::Align(align));
+        }
+        return cols;
+    }
+
     pub fn count_columns(&mut self) -> usize {
         self.array.iter().map(|row| row.len()).max().unwrap_or(0)
     }
+
+    pub fn get_h_lines_before_row(&mut self) -> Vec<Vec<bool>> {
+        vec![Vec::new(); self.array.len() + 1]
+    }
+}
+
+pub struct VecConverter<'a> {
+    pub elem: &'a typst::math::VecElem,
 }
 
 // pub struct VecConverter<'a> {
