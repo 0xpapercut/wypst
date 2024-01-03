@@ -137,8 +137,27 @@ impl ContentVisitor for ContentConverter<'_> {
         let elem = content.to_attach();
 
         let base = elem.base().accept(self).as_node().map(Box::new).ok();
-        let sup = elem.t(self.styles).map(|n| n.accept(self).as_node().map(Box::new).ok()).flatten();
-        let sub = elem.b(self.styles).map(|n| n.accept(self).as_node().map(Box::new).ok()).flatten();
+
+        let sup = match elem.t(self.styles) {
+            Some(t) => {
+                let body = t.accept(self).as_array();
+                let ordgroup = katex::OrdGroupBuilder::default()
+                    .body(body)
+                    .build().unwrap().into_node();
+                Some(Box::new(ordgroup))
+            }
+            None => None,
+        };
+        let sub = match elem.b(self.styles) {
+            Some(b) => {
+                let body = b.accept(self).as_array();
+                let ordgroup = katex::OrdGroupBuilder::default()
+                    .body(body)
+                    .build().unwrap().into_node();
+                Some(Box::new(ordgroup))
+            }
+            None => None,
+        };
 
         let subsup = katex::SupSubBuilder::default()
             .base(base)
