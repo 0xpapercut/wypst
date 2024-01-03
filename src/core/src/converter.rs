@@ -25,7 +25,15 @@ impl ContentVisitor for ContentConverter<'_> {
     }
 
     fn visit_op(&mut self, content: &typst::foundations::Content) -> Node {
-        unimplemented!()
+        let elem = content.to_op();
+
+        let op = katex::OpBuilder::default()
+            .limits(true)
+            .parent_is_sup_sub(false)
+            .symbol(false)
+            .name(format!("\\{}", elem.text().plain_text()))
+            .build().unwrap().into_node();
+        Node::Node(op)
     }
 
     fn visit_mat(&mut self, content: &typst::foundations::Content) -> Node {
