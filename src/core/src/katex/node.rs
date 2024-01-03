@@ -1,11 +1,11 @@
+/// Reference: parseNode.js
+
 use crate::katex::source::SourceLocation;
 use crate::katex::symbol;
 use crate::katex::types::*;
 use derive_builder::Builder;
 use serde::Serialize;
-/// Reference: parseNode.js
 use std::collections::HashMap;
-use typst::foundations::Style;
 
 pub type NodeArray = Vec<Node>;
 pub type NodeArray2D = Vec<Vec<Node>>;
@@ -631,28 +631,18 @@ impl ArrayBuilder {
         self.body.as_mut().unwrap().last_mut().unwrap().push(node);
     }
 
-    /// Encloses a `NodeArray` inside a `Styling` node before adding to the current row.
-    pub fn push_node_array(&mut self, nodes: NodeArray, mode: Mode, style: StyleStr) {
-        let styling = StylingBuilder::default()
-            .mode(mode)
-            .style(style)
-            .body(nodes)
-            .build()
-            .unwrap();
-        let node = Node::Styling(styling);
-        self.body.as_mut().unwrap().last_mut().unwrap().push(node);
-    }
-
     pub fn count_columns(&mut self) -> usize {
         return self.body.iter().map(|row| row.len()).max().unwrap_or(0);
     }
 
-    // pub fn build_flattened(&mut self) {
-    //     let mut nodes: NodeArray = Vec::new();
-    //     for styling in self.body {
-
-    //     }
-    // }
+    /// Map the `Array`'s body nodes.
+    pub fn map_body(&mut self, f: &dyn Fn(&mut Node) -> Node) {
+        for row in self.body.as_mut().unwrap().iter_mut() {
+            for node in row.iter_mut() {
+                *node = f(node);
+            }
+        }
+    }
 }
 
 macro_rules! into_node {
