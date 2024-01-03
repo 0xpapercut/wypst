@@ -11,4 +11,4 @@ Finally, the rendering process is expected to have equivalent speed to that of K
 ## Issues
 - `sum` is not represented correctly because it doesn't have `limits` set to `true`:
 - The `:=` symbol is not rendered correctly.
-- Spaces around `∣` are eaten up, for example in `{x | x "is natural"}`. This problem extends to some other symbols as well, so any solution must be somewhat general.
+- Spaces around `∣` are eaten up, for example in `{x | x "is natural"}`. Also in the same expression, space between `x` and `"is natural"` is eatuen up as well. This problem extends to some other symbols as well, so any solution must be somewhat general.
