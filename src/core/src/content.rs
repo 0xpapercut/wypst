@@ -1,21 +1,38 @@
 use crate::node::*;
+use typst;
+use typst::foundations::Content;
 
 pub trait ContentVisitor {
-    fn visit_equation(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_sequence(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_text(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_space(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_lr(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_attach(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_math_style(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_h(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_linebreak(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_align_point(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_frac(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_vec(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_mat(&mut self, content: &typst::foundations::Content) -> Node;
-    fn visit_op(&mut self, content: &typst::foundations::Content) -> Node;
-
+    fn visit_equation(&mut self, content: &Content) -> Node;
+    fn visit_sequence(&mut self, content: &Content) -> Node;
+    fn visit_text(&mut self, content: &Content) -> Node;
+    fn visit_space(&mut self, content: &Content) -> Node;
+    fn visit_lr(&mut self, content: &Content) -> Node;
+    fn visit_attach(&mut self, content: &Content) -> Node;
+    fn visit_math_style(&mut self, content: &Content) -> Node;
+    fn visit_h(&mut self, content: &Content) -> Node;
+    fn visit_linebreak(&mut self, content: &Content) -> Node;
+    fn visit_align_point(&mut self, content: &Content) -> Node;
+    fn visit_frac(&mut self, content: &Content) -> Node;
+    fn visit_vec(&mut self, content: &Content) -> Node;
+    fn visit_mat(&mut self, content: &Content) -> Node;
+    fn visit_op(&mut self, content: &Content) -> Node;
+    fn visit_cases(&mut self, content: &Content) -> Node;
+    fn visit_overbracket(&mut self, content: &Content) -> Node;
+    fn visit_underbracket(&mut self, content: &Content) -> Node;
+    fn visit_overbrace(&mut self, content: &Content) -> Node;
+    fn visit_underbrace(&mut self, content: &Content) -> Node;
+    fn visit_overline(&mut self, content: &Content) -> Node;
+    fn visit_underline(&mut self, content: &Content) -> Node;
+    fn visit_root(&mut self, content: &Content) -> Node;
+    fn visit_mid(&mut self, content: &Content) -> Node;
+    fn visit_binom(&mut self, content: &Content) -> Node;
+    fn visit_class(&mut self, content: &Content) -> Node;
+    fn visit_cancel(&mut self, content: &Content) -> Node;
+    fn visit_limits(&mut self, content: &Content) -> Node;
+    fn visit_scripts(&mut self, content: &Content) -> Node;
+    fn visit_primes(&mut self, content: &Content) -> Node;
+    fn visit_accent(&mut self, content: &Content) -> Node;
 }
 
 pub trait ContentType {
@@ -32,6 +49,22 @@ pub trait ContentType {
     fn is_vec(&self) -> bool;
     fn is_mat(&self) -> bool;
     fn is_op(&self) -> bool;
+    fn is_cases(&self) -> bool;
+    fn is_overbracket(&self) -> bool;
+    fn is_underbracket(&self) -> bool;
+    fn is_overbrace(&self) -> bool;
+    fn is_underbrace(&self) -> bool;
+    fn is_overline(&self) -> bool;
+    fn is_underline(&self) -> bool;
+    fn is_root(&self) -> bool;
+    fn is_mid(&self) -> bool;
+    fn is_binom(&self) -> bool;
+    fn is_class(&self) -> bool;
+    fn is_cancel(&self) -> bool;
+    fn is_limits(&self) -> bool;
+    fn is_scripts(&self) -> bool;
+    fn is_primes(&self) -> bool;
+    fn is_accent(&self) -> bool;
 
     fn to_equation(&self) -> &typst::math::EquationElem;
     fn to_space(&self) -> &typst::text::SpaceElem;
@@ -46,9 +79,25 @@ pub trait ContentType {
     fn to_vec(&self) -> &typst::math::VecElem;
     fn to_mat(&self) -> &typst::math::MatElem;
     fn to_op(&self) -> &typst::math::OpElem;
+    fn to_cases(&self) -> &typst::math::CasesElem;
+    fn to_overbracket(&self) -> &typst::math::OverbracketElem;
+    fn to_underbracket(&self) -> &typst::math::UnderbracketElem;
+    fn to_overbrace(&self) -> &typst::math::OverbraceElem;
+    fn to_underbrace(&self) -> &typst::math::UnderbraceElem;
+    fn to_overline(&self) -> &typst::math::OverlineElem;
+    fn to_underline(&self) -> &typst::math::UnderlineElem;
+    fn to_root(&self) -> &typst::math::RootElem;
+    fn to_mid(&self) -> &typst::math::MidElem;
+    fn to_binom(&self) -> &typst::math::BinomElem;
+    fn to_class(&self) -> &typst::math::ClassElem;
+    fn to_cancel(&self) -> &typst::math::CancelElem;
+    fn to_limits(&self) -> &typst::math::LimitsElem;
+    fn to_scripts(&self) -> &typst::math::ScriptsElem;
+    fn to_primes(&self) -> &typst::math::PrimesElem;
+    fn to_accent(&self) -> &typst::math::AccentElem;
 }
 
-impl ContentType for typst::foundations::Content {
+impl ContentType for Content {
     fn is_equation(&self) -> bool {
         self.is::<typst::math::EquationElem>()
     }
@@ -87,6 +136,54 @@ impl ContentType for typst::foundations::Content {
     }
     fn is_op(&self) -> bool {
         self.is::<typst::math::OpElem>()
+    }
+    fn is_cases(&self) -> bool {
+        self.is::<typst::math::CasesElem>()
+    }
+    fn is_overbracket(&self) -> bool {
+        self.is::<typst::math::OverbraceElem>()
+    }
+    fn is_underbracket(&self) -> bool {
+        self.is::<typst::math::UnderbracketElem>()
+    }
+    fn is_overbrace(&self) -> bool {
+        self.is::<typst::math::OverbraceElem>()
+    }
+    fn is_underbrace(&self) -> bool {
+        self.is::<typst::math::UnderbraceElem>()
+    }
+    fn is_overline(&self) -> bool {
+        self.is::<typst::math::OverlineElem>()
+    }
+    fn is_underline(&self) -> bool {
+        self.is::<typst::math::UnderlineElem>()
+    }
+    fn is_root(&self) -> bool {
+        self.is::<typst::math::RootElem>()
+    }
+    fn is_mid(&self) -> bool {
+        self.is::<typst::math::MidElem>()
+    }
+    fn is_binom(&self) -> bool {
+        self.is::<typst::math::BinomElem>()
+    }
+    fn is_class(&self) -> bool {
+        self.is::<typst::math::ClassElem>()
+    }
+    fn is_cancel(&self) -> bool {
+        self.is::<typst::math::CancelElem>()
+    }
+    fn is_limits(&self) -> bool {
+        self.is::<typst::math::LimitsElem>()
+    }
+    fn is_scripts(&self) -> bool {
+        self.is::<typst::math::ScriptsElem>()
+    }
+    fn is_primes(&self) -> bool {
+        self.is::<typst::math::PrimesElem>()
+    }
+    fn is_accent(&self) -> bool {
+        self.is::<typst::math::AccentElem>()
     }
 
     fn to_equation(&self) -> &typst::math::EquationElem {
@@ -128,13 +225,61 @@ impl ContentType for typst::foundations::Content {
     fn to_op(&self) -> &typst::math::OpElem {
         self.to::<typst::math::OpElem>().unwrap()
     }
+    fn to_cases(&self) -> &typst::math::CasesElem {
+        self.to::<typst::math::CasesElem>().unwrap()
+    }
+    fn to_overbracket(&self) -> &typst::math::OverbracketElem {
+        self.to::<typst::math::OverbracketElem>().unwrap()
+    }
+    fn to_underbracket(&self) -> &typst::math::UnderbracketElem {
+        self.to::<typst::math::UnderbracketElem>().unwrap()
+    }
+    fn to_overbrace(&self) -> &typst::math::OverbraceElem {
+        self.to::<typst::math::OverbraceElem>().unwrap()
+    }
+    fn to_underbrace(&self) -> &typst::math::UnderbraceElem {
+        self.to::<typst::math::UnderbraceElem>().unwrap()
+    }
+    fn to_overline(&self) -> &typst::math::OverlineElem {
+        self.to::<typst::math::OverlineElem>().unwrap()
+    }
+    fn to_underline(&self) -> &typst::math::UnderlineElem {
+        self.to::<typst::math::UnderlineElem>().unwrap()
+    }
+    fn to_root(&self) -> &typst::math::RootElem {
+        self.to::<typst::math::RootElem>().unwrap()
+    }
+    fn to_mid(&self) -> &typst::math::MidElem {
+        self.to::<typst::math::MidElem>().unwrap()
+    }
+    fn to_binom(&self) -> &typst::math::BinomElem {
+        self.to::<typst::math::BinomElem>().unwrap()
+    }
+    fn to_class(&self) -> &typst::math::ClassElem {
+        self.to::<typst::math::ClassElem>().unwrap()
+    }
+    fn to_cancel(&self) -> &typst::math::CancelElem {
+        self.to::<typst::math::CancelElem>().unwrap()
+    }
+    fn to_limits(&self) -> &typst::math::LimitsElem {
+        self.to::<typst::math::LimitsElem>().unwrap()
+    }
+    fn to_scripts(&self) -> &typst::math::ScriptsElem {
+        self.to::<typst::math::ScriptsElem>().unwrap()
+    }
+    fn to_primes(&self) -> &typst::math::PrimesElem {
+        self.to::<typst::math::PrimesElem>().unwrap()
+    }
+    fn to_accent(&self) -> &typst::math::AccentElem {
+        self.to::<typst::math::AccentElem>().unwrap()
+    }
 }
 
 pub trait ContentExt {
     fn accept(&self, visitor: &mut dyn ContentVisitor) -> Node;
 }
 
-impl ContentExt for typst::foundations::Content {
+impl ContentExt for Content {
     fn accept(&self, visitor: &mut dyn ContentVisitor) -> Node {
         match self {
             _ if self.is_equation() => visitor.visit_equation(self),
