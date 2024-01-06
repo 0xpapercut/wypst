@@ -372,6 +372,7 @@ pub struct Font {
 }
 
 #[derive(Clone, Serialize, Builder)]
+#[builder(setter(into))]
 #[serde(rename_all = "camelCase")]
 pub struct GenFrac {
     #[builder(default = "Mode::Math")]
