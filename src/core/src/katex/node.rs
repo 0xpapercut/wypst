@@ -338,12 +338,17 @@ pub struct DelimSizing {
     pub delim: String,
 }
 
-#[derive(Clone, Serialize)]
+#[derive(Clone, Serialize, Builder)]
+#[builder(setter(into))]
 pub struct Enclose {
+    #[builder(default = "Mode::Math")]
     pub mode: Mode,
+    #[builder(default)]
     pub loc: Option<SourceLocation>,
     pub label: String,
+    #[builder(default)]
     pub background_color: Option<String>,
+    #[builder(default)]
     pub border_color: Option<String>,
     pub body: Box<Node>,
 }
