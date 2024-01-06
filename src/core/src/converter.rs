@@ -1,11 +1,12 @@
 use typst;
+use typst::foundations::Content;
 
 use crate::katex;
 use crate::node::*;
 use crate::content::*;
 use crate::ext::*;
 
-pub fn convert(root: &typst::foundations::Content) -> Node {
+pub fn convert(root: &Content) -> Node {
     let styles = typst::foundations::StyleChain::default();
     let mut converter = ContentConverter {
         styles: styles,
@@ -19,12 +20,12 @@ pub struct ContentConverter<'a> {
 }
 
 impl ContentVisitor for ContentConverter<'_> {
-    fn visit_equation(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_equation(&mut self, content: &Content) -> Node {
         let elem = content.to_equation();
         Node::Array(elem.body().accept(self).as_array())
     }
 
-    fn visit_op(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_op(&mut self, content: &Content) -> Node {
         let elem = content.to_op();
 
         let op = katex::OpBuilder::default()
@@ -36,7 +37,7 @@ impl ContentVisitor for ContentConverter<'_> {
         Node::Node(op)
     }
 
-    fn visit_mat(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_mat(&mut self, content: &Content) -> Node {
         let elem = content.to_mat();
         let mut constructor = katex::ArrayConstructor::default();
 
@@ -64,12 +65,12 @@ impl ContentVisitor for ContentConverter<'_> {
         Node::Node(leftright)
     }
 
-    fn visit_vec(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_vec(&mut self, content: &Content) -> Node {
         let mut converter = VecConverter::new(content.to_vec());
         converter.convert(self)
     }
 
-    fn visit_frac(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_frac(&mut self, content: &Content) -> Node {
         let elem = content.to_frac();
 
         let numer_body = elem.num().accept(self).as_array();
@@ -90,30 +91,30 @@ impl ContentVisitor for ContentConverter<'_> {
         Node::Node(genfrac)
     }
 
-    fn visit_align_point(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_align_point(&mut self, content: &Content) -> Node {
         let ordgroup = katex::OrdGroupBuilder::default().build().unwrap().into_node();
         Node::Node(ordgroup)
     }
 
-    fn visit_linebreak(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_linebreak(&mut self, content: &Content) -> Node {
         Node::Array(Vec::new())
     }
 
-    fn visit_sequence(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_sequence(&mut self, content: &Content) -> Node {
         let mut converter = SequenceConverter::new(content);
         converter.convert(self)
     }
 
-    fn visit_space(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_space(&mut self, content: &Content) -> Node {
         Node::Array(Vec::new())
     }
 
-    fn visit_text(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_text(&mut self, content: &Content) -> Node {
         let mut text_converter = TextConverter::new(content.to_text());
         text_converter.convert()
     }
 
-    fn visit_lr(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_lr(&mut self, content: &Content) -> Node {
         let elem = content.to_lr();
 
         let mut body = self.visit_sequence(elem.body()).as_array();
@@ -133,7 +134,7 @@ impl ContentVisitor for ContentConverter<'_> {
         Node::Node(leftright)
     }
 
-    fn visit_attach(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_attach(&mut self, content: &Content) -> Node {
         let elem = content.to_attach();
 
         let base = elem.base().accept(self).as_node().map(Box::new).ok();
@@ -167,7 +168,7 @@ impl ContentVisitor for ContentConverter<'_> {
         Node::Node(subsup)
     }
 
-    fn visit_math_style(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_math_style(&mut self, content: &Content) -> Node {
         let elem = content.to_math_style();
 
         let body = elem.body().accept(self).as_node().map(Box::new).unwrap();
@@ -188,20 +189,20 @@ impl ContentVisitor for ContentConverter<'_> {
         )
     }
 
-    fn visit_h(&mut self, content: &typst::foundations::Content) -> Node {
+    fn visit_h(&mut self, content: &Content) -> Node {
         Node::Array(Vec::new())
     }
 }
 
 pub struct SequenceConverter<'a> {
-    pub content: &'a typst::foundations::Content,
+    pub content: &'a Content,
     pub body: Vec<Vec<Node>>,
     pub stack: Vec<Node>,
     pub is_aligned: bool,
 }
 
 impl<'a> SequenceConverter<'a> {
-    pub fn new(content: &'a typst::foundations::Content) -> Self {
+    pub fn new(content: &'a Content) -> Self {
         Self {
             content,
             body: Vec::new(),
