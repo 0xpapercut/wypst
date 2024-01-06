@@ -5,6 +5,7 @@ use crate::katex;
 use crate::node::*;
 use crate::content::*;
 use crate::ext::*;
+use crate::utils::insert_separator;
 
 pub fn convert(root: &Content) -> Node {
     let styles = typst::foundations::StyleChain::default();

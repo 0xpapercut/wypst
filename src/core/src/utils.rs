@@ -68,3 +68,10 @@ pub fn eval(world: &dyn typst::World, string: &str) -> typst::foundations::Conte
         _ => panic!(),
     }
 }
+
+pub fn insert_separator<T: Clone>(list: &[T], separator: T) -> Vec<T> {
+    list.iter()
+        .flat_map(|x| vec![x.clone(), separator.clone()])
+        .take(list.len() * 2 - 1)
+        .collect()
+}
