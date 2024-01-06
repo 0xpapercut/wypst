@@ -193,6 +193,109 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_h(&mut self, content: &Content) -> Node {
         Node::Array(Vec::new())
     }
+
+    fn visit_accent(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_binom(&mut self, content: &Content) -> Node {
+        let elem = content.to_binom();
+
+        let numer_body = elem.upper().accept(self).as_array();
+        let numer = katex::OrdGroupBuilder::default()
+            .body(numer_body)
+            .build().unwrap().into_node();
+
+        let separator = katex::Symbol::get(katex::Mode::Math, ',').create_node();
+
+        let denom_body_parts: Vec<katex::NodeArray> = elem.lower().iter().map(|c| c.accept(self).as_array()).collect();
+        let denom_body = insert_separator(&denom_body_parts, [separator].to_vec()).iter().flatten().cloned().collect();
+        let denom = katex::OrdGroupBuilder::default()
+            .body(denom_body)
+            .build().unwrap().into_node();
+
+        let genfrac = katex::GenFracBuilder::default()
+            .continued(false)
+            .numer(numer)
+            .denom(denom)
+            .has_bar_line(false)
+            .left_delim("(".to_string())
+            .right_delim(")".to_string())
+            .size(katex::GenFracSizeType::Auto)
+            .build().unwrap().into_node();
+
+        Node::Node(genfrac)
+    }
+
+    fn visit_cancel(&mut self, content: &Content) -> Node {
+        // Does not support: length, inverted, cross, angle, stroke.
+        let elem = content.to_cancel();
+
+        let ordgroup_body = elem.body().accept(self).as_array();
+        let ordgroup = katex::OrdGroupBuilder::default()
+            .body(ordgroup_body)
+            .build().unwrap().into_node();
+
+        let enclose = katex::EncloseBuilder::default()
+            .label("\\cancel")
+            .body(ordgroup)
+            .build().unwrap().into_node();
+
+        Node::Node(enclose)
+    }
+
+    fn visit_cases(&mut self, content: &Content) -> Node {
+        let mut converter = CasesConverter::new(content.to_cases());
+        converter.convert(self)
+    }
+
+    fn visit_class(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_limits(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_mid(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_overbrace(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_overbracket(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_overline(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_primes(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_root(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_scripts(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_underbrace(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_underbracket(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
+
+    fn visit_underline(&mut self, content: &Content) -> Node {
+        unimplemented!()
+    }
 }
 
 pub struct SequenceConverter<'a> {
@@ -279,6 +382,38 @@ impl<'a> SequenceConverter<'a> {
         let nodes = self.stack.iter().map(|n| n.clone().as_array()).flatten().collect();
         self.body.last_mut().unwrap().push(Node::Array(nodes));
         self.stack.clear();
+    }
+}
+
+pub struct CasesConverter<'a> {
+    pub elem: &'a typst::math::CasesElem,
+    pub body: Vec<Vec<Node>>,
+    pub stack: Vec<Node>,
+}
+
+impl<'a> CasesConverter<'a> {
+    pub fn new(elem: &'a typst::math::CasesElem) -> Self {
+        Self {
+            elem,
+            body: Vec::new(),
+            stack: Vec::new(),
+        }
+    }
+
+    pub fn convert(&mut self, visitor: &mut ContentConverter) -> Node {
+        unimplemented!()
+    }
+
+    pub fn process_children(&mut self, visitor: &mut ContentConverter) {
+        for child in self.elem.children() {
+            if child.is_sequence() {
+                let mut converter = SequenceConverter::new(child);
+                converter.process_sequence_elements(visitor);
+                self.body.extend(converter.body);
+            } else {
+                
+            }
+        }
     }
 }
 
