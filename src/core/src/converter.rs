@@ -401,7 +401,46 @@ impl<'a> CasesConverter<'a> {
     }
 
     pub fn convert(&mut self, visitor: &mut ContentConverter) -> Node {
-        unimplemented!()
+        self.process_children(visitor);
+
+        let mut constructor = katex::ArrayConstructor::default();
+        for row in self.body.iter_mut() {
+            constructor.next_row();
+            for node in row {
+                let ordgroup = katex::OrdGroupBuilder::default()
+                    .body(node.clone().as_array())
+                    .build().unwrap().into_node();
+                let styling = katex::StylingBuilder::default()
+                    .style(katex::StyleStr::Text)
+                    .body([ordgroup].to_vec())
+                    .build().unwrap().into_node();
+                constructor.push_node(styling);
+            }
+        }
+
+        let cols = vec![
+            katex::AlignSpec::Align(katex::Align {
+                align: "l".to_string(),
+                pregap: Some(0f32),
+                postgap: Some(1f32),
+            }),
+            katex::AlignSpec::Align(katex::Align {
+                align: "l".to_string(),
+                pregap: Some(0f32),
+                postgap: Some(0f32),
+            }),
+        ];
+        let array = constructor.builder()
+            .arraystretch(1.2)
+            .cols(cols)
+            .build().unwrap().into_node();
+        let leftright = katex::LeftRightBuilder::default()
+            .body([array].to_vec())
+            .left("\\{".to_string())
+            .right(".".to_string())
+            .build().unwrap().into_node();
+
+        Node::Node(leftright)
     }
 
     pub fn process_children(&mut self, visitor: &mut ContentConverter) {
