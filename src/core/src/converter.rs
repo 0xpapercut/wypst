@@ -273,8 +273,30 @@ impl ContentVisitor for ContentConverter<'_> {
         Node::Node(middle)
     }
 
-    fn visit_overbracket(&mut self, content: &Content) -> Node {
-        unimplemented!()
+    fn visit_overbrace(&mut self, content: &Content) -> Node {
+        let elem = content.to_overbrace();
+
+        let inner_base_body = elem.body().accept(self).as_array();
+        let inner_base = katex::OrdGroupBuilder::default()
+            .body(inner_base_body)
+            .build().unwrap().into_node();
+        let base = katex::HorizBraceBuilder::default()
+            .label("\\overbrace".to_string())
+            .is_over(true)
+            .base(inner_base)
+            .build().unwrap().into_node();
+
+        let sup_body = elem.annotation(self.styles).unwrap().accept(self).as_array();
+        let sup = katex::OrdGroupBuilder::default()
+            .body(sup_body)
+            .build().unwrap().into_node();
+
+        let supsub = katex::SupSubBuilder::default()
+            .base(Box::new(base))
+            .sup(Box::new(sup))
+            .build().unwrap().into_node();
+
+        Node::Node(supsub)
     }
 
     fn visit_overline(&mut self, content: &Content) -> Node {
