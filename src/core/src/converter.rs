@@ -300,7 +300,18 @@ impl ContentVisitor for ContentConverter<'_> {
     }
 
     fn visit_overline(&mut self, content: &Content) -> Node {
-        unimplemented!()
+        let elem = content.to_overline();
+
+        let ordgroup_body = elem.body().accept(self).as_array();
+        let ordgroup = katex::OrdGroupBuilder::default()
+            .body(ordgroup_body)
+            .build().unwrap().into_node();
+
+        let overline = katex::OverlineBuilder::default()
+            .body(ordgroup)
+            .build().unwrap().into_node();
+
+        Node::Node(overline)
     }
 
     fn visit_primes(&mut self, content: &Content) -> Node {
