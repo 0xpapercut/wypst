@@ -319,11 +319,67 @@ impl ContentVisitor for ContentConverter<'_> {
     }
 
     fn visit_root(&mut self, content: &Content) -> Node {
-        unimplemented!()
+        let elem = content.to_root();
+
+        let index_body = elem.index(self.styles).map(|n| n.accept(self).as_array());
+        let index = match index_body {
+            Some(arr) => Some(katex::OrdGroupBuilder::default()
+                .body(arr)
+                .build().unwrap().into_node()),
+            None => None,
+        };
+
+        let body = katex::OrdGroupBuilder::default()
+            .body(elem.radicand().accept(self).as_array())
+            .build().unwrap().into_node();
+
+        let sqrt = katex::SqrtBuilder::default()
+            .body(body)
+            .index(index.map(Box::new))
+            .build().unwrap().into_node();
+
+        Node::Node(sqrt)
     }
 
-    fn visit_scripts(&mut self, content: &Content) -> Node {
-        unimplemented!()
+    fn visit_underbrace(&mut self, content: &Content) -> Node {
+        let elem = content.to_underbrace();
+
+        let inner_base_body = elem.body().accept(self).as_array();
+        let inner_base = katex::OrdGroupBuilder::default()
+            .body(inner_base_body)
+            .build().unwrap().into_node();
+        let base = katex::HorizBraceBuilder::default()
+            .label("\\underbrace".to_string())
+            .is_over(false)
+            .base(inner_base)
+            .build().unwrap().into_node();
+
+        let sub_body = elem.annotation(self.styles).unwrap().accept(self).as_array();
+        let sub = katex::OrdGroupBuilder::default()
+            .body(sub_body)
+            .build().unwrap().into_node();
+
+        let supsub = katex::SupSubBuilder::default()
+            .base(Box::new(base))
+            .sub(Box::new(sub))
+            .build().unwrap().into_node();
+
+        Node::Node(supsub)
+    }
+
+    fn visit_underline(&mut self, content: &Content) -> Node {
+        let elem = content.to_underline();
+
+        let ordgroup_body = elem.body().accept(self).as_array();
+        let ordgroup = katex::OrdGroupBuilder::default()
+            .body(ordgroup_body)
+            .build().unwrap().into_node();
+
+        let underline = katex::UnderlineBuilder::default()
+            .body(ordgroup)
+            .build().unwrap().into_node();
+
+        Node::Node(underline)
     }
 
     fn visit_underbrace(&mut self, content: &Content) -> Node {
