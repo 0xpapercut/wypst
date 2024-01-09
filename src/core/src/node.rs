@@ -18,7 +18,7 @@ impl std::fmt::Debug for Node {
 }
 
 impl Node {
-    pub fn as_node(self) -> Result<katex::Node, &'static str> {
+    pub fn into_node(self) -> Result<katex::Node, &'static str> {
         match self {
             Node::Node(node) => Ok(node),
             Node::Array(array) => {

@@ -242,8 +242,21 @@ impl ContentVisitor for ContentConverter<'_> {
         converter.convert(self)
     }
 
-    fn visit_class(&mut self, content: &Content) -> Node {
-        unimplemented!()
+    fn visit_limits(&mut self, content: &Content) -> Node {
+        let elem = content.to_limits();
+
+        let _body = elem.body();
+        let _inline = elem.inline(self.styles); // unsupported
+
+        // This comes inside an AttachElem, so we have to transform this into an operator
+        let node = katex::OpBuilder::default()
+            .mode(katex::Mode::Math)
+            .limits(true)
+            .parent_is_sup_sub(false)
+            .symbol(false)
+            .body(_body.accept(self).into_array())
+            .build().unwrap().into_node();
+        Node::Node(node)
     }
 
     fn visit_limits(&mut self, content: &Content) -> Node {
