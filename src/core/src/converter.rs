@@ -138,35 +138,28 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_attach(&mut self, content: &Content) -> Node {
         let elem = content.to_attach();
 
-        let base = elem.base().accept(self).as_node().map(Box::new).ok();
+        let _base = elem.base();
+        let _t = elem.t(self.styles);
+        let _b = elem.b(self.styles);
+        let _tl = elem.tl(self.styles); // unsupported
+        let _bl = elem.bl(self.styles); // unsupported
+        let _tr = elem.tr(self.styles); // unsupported
+        let _br = elem.br(self.styles); // unsupported
+        if _tl.is_some() { warn!("Top left element is unsupported."); }
+        if _tr.is_some() { warn!("Top right element is unsupported."); }
+        if _bl.is_some() { warn!("Bottom left element is unsupported."); }
+        if _br.is_some() { warn!("Bottom right element is unsupported."); }
 
-        let sup = match elem.t(self.styles) {
-            Some(t) => {
-                let body = t.accept(self).as_array();
-                let ordgroup = katex::OrdGroupBuilder::default()
-                    .body(body)
-                    .build().unwrap().into_node();
-                Some(Box::new(ordgroup))
-            }
-            None => None,
-        };
-        let sub = match elem.b(self.styles) {
-            Some(b) => {
-                let body = b.accept(self).as_array();
-                let ordgroup = katex::OrdGroupBuilder::default()
-                    .body(body)
-                    .build().unwrap().into_node();
-                Some(Box::new(ordgroup))
-            }
-            None => None,
-        };
+        let base = _base.accept(self).into_ordgroup(katex::Mode::Math).into_node();
+        let sup = _t.map(|c| c.accept(self).into_ordgroup(katex::Mode::Math).into_node());
+        let sub = _b.map(|c| c.accept(self).into_ordgroup(katex::Mode::Math).into_node());
 
-        let subsup = katex::SupSubBuilder::default()
-            .base(base)
-            .sup(sup)
-            .sub(sub)
+        let node = katex::SupSubBuilder::default()
+            .base(Some(base).map(Box::new))
+            .sup(sup.map(Box::new))
+            .sub(sub.map(Box::new))
             .build().unwrap().into_node();
-        Node::Node(subsup)
+        Node::Node(node)
     }
 
     fn visit_math_style(&mut self, content: &Content) -> Node {
