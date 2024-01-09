@@ -31,7 +31,21 @@ impl Node {
         }
     }
 
-pub fn as_array(self) -> katex::NodeArray {
+    pub fn into_ordgroup(&self, mode: katex::Mode) -> katex::OrdGroup {
+        katex::OrdGroupBuilder::default()
+            .mode(mode)
+            .body(self.clone().into_array())
+            .build().unwrap()
+    }
+
+    pub fn into_node_fallback_ordgroup(&self, mode: katex::Mode) -> katex::Node {
+        match self.clone().into_node() {
+            Ok(node) => node,
+            Err(_) => self.into_ordgroup(mode).into_node(),
+        }
+    }
+
+    pub fn into_array(self) -> katex::NodeArray {
         match self {
             Node::Node(node) => vec![node.clone()],
             Node::Array(array) => array,
