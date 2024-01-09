@@ -150,9 +150,9 @@ impl ContentVisitor for ContentConverter<'_> {
         if _bl.is_some() { warn!("Bottom left element is unsupported."); }
         if _br.is_some() { warn!("Bottom right element is unsupported."); }
 
-        let base = _base.accept(self).into_ordgroup(katex::Mode::Math).into_node();
-        let sup = _t.map(|c| c.accept(self).into_ordgroup(katex::Mode::Math).into_node());
-        let sub = _b.map(|c| c.accept(self).into_ordgroup(katex::Mode::Math).into_node());
+        let base = _base.accept(self).into_node_fallback_ordgroup(katex::Mode::Math);
+        let sup = _t.map(|c| c.accept(self)).map(|n| n.into_node_fallback_ordgroup(katex::Mode::Math));
+        let sub = _b.map(|c| c.accept(self)).map(|n| n.into_node_fallback_ordgroup(katex::Mode::Math));
 
         let node = katex::SupSubBuilder::default()
             .base(Some(base).map(Box::new))
