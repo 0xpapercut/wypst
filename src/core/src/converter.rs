@@ -259,8 +259,19 @@ impl ContentVisitor for ContentConverter<'_> {
         Node::Node(node)
     }
 
-    fn visit_limits(&mut self, content: &Content) -> Node {
-        unimplemented!()
+    fn visit_scripts(&mut self, content: &Content) -> Node {
+        let elem = content.to_scripts();
+
+        let _body = elem.body();
+
+        let node = katex::OpBuilder::default()
+            .mode(katex::Mode::Math)
+            .limits(false)
+            .parent_is_sup_sub(false)
+            .symbol(false)
+            .body(_body.accept(self).into_array())
+            .build().unwrap().into_node();
+        Node::Node(node)
     }
 
     fn visit_mid(&mut self, content: &Content) -> Node {
