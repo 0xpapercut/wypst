@@ -47,7 +47,7 @@ impl ContentVisitor for ContentConverter<'_> {
             for content in row {
                 let node = content.accept(self);
                 let ordgroup = katex::OrdGroupBuilder::default()
-                    .body(node.as_array())
+                    .body(node.into_array())
                     .build().unwrap().into_node();
                 let styling = katex::StylingBuilder::default()
                     .body([ordgroup].to_vec())
@@ -76,12 +76,12 @@ impl ContentVisitor for ContentConverter<'_> {
 
         let numer_body = elem.num().accept(self).as_array();
         let numer = katex::OrdGroupBuilder::default()
-            .body(numer_body)
+            .body(_num.accept(self).into_array())
             .build().unwrap().into_node();
 
         let denom_body = elem.denom().accept(self).as_array();
         let denom = katex::OrdGroupBuilder::default()
-            .body(denom_body)
+            .body(_denom.accept(self).into_array())
             .build().unwrap().into_node();
 
         let genfrac = katex::GenFracBuilder::default()
@@ -118,7 +118,10 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_lr(&mut self, content: &Content) -> Node {
         let elem = content.to_lr();
 
-        let mut body = self.visit_sequence(elem.body()).as_array();
+        let _body = elem.body();
+        let _size = elem.size(self.styles); // unsupported
+
+        let mut body = _body.accept(self).into_array();
         let left = match body.remove(0) {
             katex::Node::Atom(atom) => atom.text,
             _ => panic!("Not an atom!"),
@@ -196,12 +199,11 @@ impl ContentVisitor for ContentConverter<'_> {
 
         let numer_body = elem.upper().accept(self).as_array();
         let numer = katex::OrdGroupBuilder::default()
-            .body(numer_body)
+            .body(_upper.accept(self).into_array())
             .build().unwrap().into_node();
 
         let separator = katex::Symbol::get(katex::Mode::Math, ',').create_node();
-
-        let denom_body_parts: Vec<katex::NodeArray> = elem.lower().iter().map(|c| c.accept(self).as_array()).collect();
+        let denom_body_parts: Vec<katex::NodeArray> = elem.lower().iter().map(|c| c.accept(self).into_array()).collect();
         let denom_body = insert_separator(&denom_body_parts, [separator].to_vec()).iter().flatten().cloned().collect();
         let denom = katex::OrdGroupBuilder::default()
             .body(denom_body)
@@ -224,9 +226,15 @@ impl ContentVisitor for ContentConverter<'_> {
         // Does not support: length, inverted, cross, angle, stroke.
         let elem = content.to_cancel();
 
-        let ordgroup_body = elem.body().accept(self).as_array();
-        let ordgroup = katex::OrdGroupBuilder::default()
-            .body(ordgroup_body)
+        let _body = elem.body();
+        let _length = elem.length(self.styles); // unsupported
+        let _inverted = elem.inverted(self.styles); // unsupported
+        let _cross = elem.cross(self.styles); // unsupported
+        let _angle = elem.angle(self.styles); // unsupported
+        let _stroke = elem.stroke(self.styles); // unsupported
+
+        let body = katex::OrdGroupBuilder::default()
+            .body(_body.accept(self).into_array())
             .build().unwrap().into_node();
 
         let enclose = katex::EncloseBuilder::default()
@@ -395,19 +403,31 @@ impl ContentVisitor for ContentConverter<'_> {
         let underline = katex::UnderlineBuilder::default()
             .body(ordgroup)
             .build().unwrap().into_node();
-
-        Node::Node(underline)
-    }
-
-    fn visit_underbrace(&mut self, content: &Content) -> Node {
-        unimplemented!()
+        Node::Node(node)
     }
 
     fn visit_underbracket(&mut self, content: &Content) -> Node {
+        // unsupported
         unimplemented!()
     }
 
-    fn visit_underline(&mut self, content: &Content) -> Node {
+    fn visit_overbracket(&mut self, content: &Content) -> Node {
+        // unsupported
+        unimplemented!()
+    }
+
+    fn visit_class(&mut self, content: &Content) -> Node {
+        // unsupported
+        unimplemented!()
+    }
+
+    fn visit_primes(&mut self, content: &Content) -> Node {
+        // unsupported
+        unimplemented!()
+    }
+
+    fn visit_accent(&mut self, content: &Content) -> Node {
+        // unsupported
         unimplemented!()
     }
 }
@@ -440,7 +460,7 @@ impl<'a> SequenceConverter<'a> {
     }
 
     pub fn convert_flatten(&mut self) -> Node {
-        let nodes = self.body.iter().flatten().map(|n| n.clone().as_array()).flatten();
+        let nodes = self.body.iter().flatten().map(|n| n.clone().into_array()).flatten();
         Node::Array(nodes.collect())
     }
 
@@ -451,7 +471,7 @@ impl<'a> SequenceConverter<'a> {
             constructor.next_row();
             for node in row.iter_mut() {
                 let ordgroup = katex::OrdGroupBuilder::default()
-                    .body(node.clone().as_array())
+                    .body(node.clone().into_array())
                     .build().unwrap().into_node();
                 let styling = katex::StylingBuilder::default()
                     .style(katex::StyleStr::Display)
