@@ -23,7 +23,7 @@ pub struct ContentConverter<'a> {
 impl ContentVisitor for ContentConverter<'_> {
     fn visit_equation(&mut self, content: &Content) -> Node {
         let elem = content.to_equation();
-        Node::Array(elem.body().accept(self).as_array())
+        Node::Array(elem.body().accept(self).into_array())
     }
 
     fn visit_op(&mut self, content: &Content) -> Node {
