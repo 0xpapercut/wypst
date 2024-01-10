@@ -74,22 +74,22 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_frac(&mut self, content: &Content) -> Node {
         let elem = content.to_frac();
 
-        let numer_body = elem.num().accept(self).as_array();
+        let _num = elem.num();
+        let _denom = elem.denom();
+
         let numer = katex::OrdGroupBuilder::default()
             .body(_num.accept(self).into_array())
             .build().unwrap().into_node();
 
-        let denom_body = elem.denom().accept(self).as_array();
         let denom = katex::OrdGroupBuilder::default()
             .body(_denom.accept(self).into_array())
             .build().unwrap().into_node();
 
-        let genfrac = katex::GenFracBuilder::default()
+        let node = katex::GenFracBuilder::default()
             .numer(Box::new(numer))
             .denom(Box::new(denom))
             .build().unwrap().into_node();
-
-        Node::Node(genfrac)
+        Node::Node(node)
     }
 
     fn visit_align_point(&mut self, content: &Content) -> Node {
