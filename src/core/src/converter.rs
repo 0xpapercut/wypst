@@ -197,7 +197,9 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_binom(&mut self, content: &Content) -> Node {
         let elem = content.to_binom();
 
-        let numer_body = elem.upper().accept(self).as_array();
+        let _upper = elem.upper();
+        let _lower = elem.lower();
+
         let numer = katex::OrdGroupBuilder::default()
             .body(_upper.accept(self).into_array())
             .build().unwrap().into_node();
@@ -209,7 +211,7 @@ impl ContentVisitor for ContentConverter<'_> {
             .body(denom_body)
             .build().unwrap().into_node();
 
-        let genfrac = katex::GenFracBuilder::default()
+        let node = katex::GenFracBuilder::default()
             .continued(false)
             .numer(numer)
             .denom(denom)
@@ -218,8 +220,7 @@ impl ContentVisitor for ContentConverter<'_> {
             .right_delim(")".to_string())
             .size(katex::GenFracSizeType::Auto)
             .build().unwrap().into_node();
-
-        Node::Node(genfrac)
+        Node::Node(node)
     }
 
     fn visit_cancel(&mut self, content: &Content) -> Node {
