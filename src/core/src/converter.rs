@@ -301,46 +301,33 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_overbrace(&mut self, content: &Content) -> Node {
         let elem = content.to_overbrace();
 
-        let inner_base_body = elem.body().accept(self).as_array();
-        let inner_base = katex::OrdGroupBuilder::default()
-            .body(inner_base_body)
-            .build().unwrap().into_node();
+        let _body = elem.body();
+        let _annotation = elem.annotation(self.styles);
+
         let base = katex::HorizBraceBuilder::default()
             .label("\\overbrace".to_string())
             .is_over(true)
-            .base(inner_base)
+            .base(_body.accept(self).into_ordgroup(katex::Mode::Math).into_node())
             .build().unwrap().into_node();
+        let sup = _annotation.map(|c| c.accept(self).into_ordgroup(katex::Mode::Math).into_node());
 
-        let sup_body = elem.annotation(self.styles).unwrap().accept(self).as_array();
-        let sup = katex::OrdGroupBuilder::default()
-            .body(sup_body)
-            .build().unwrap().into_node();
-
-        let supsub = katex::SupSubBuilder::default()
+        let node = katex::SupSubBuilder::default()
             .base(Box::new(base))
-            .sup(Box::new(sup))
+            .sup(sup.map(Box::new))
             .build().unwrap().into_node();
-
-        Node::Node(supsub)
+        Node::Node(node)
     }
 
     fn visit_overline(&mut self, content: &Content) -> Node {
         let elem = content.to_overline();
 
-        let ordgroup_body = elem.body().accept(self).as_array();
-        let ordgroup = katex::OrdGroupBuilder::default()
-            .body(ordgroup_body)
+        let _body = elem.body();
+
+        let body = _body.accept(self).into_ordgroup(katex::Mode::Math).into_node();
+        let node = katex::OverlineBuilder::default()
+            .body(Box::new(body))
             .build().unwrap().into_node();
-
-        let overline = katex::OverlineBuilder::default()
-            .body(ordgroup)
-            .build().unwrap().into_node();
-
-        Node::Node(overline)
-    }
-
-    fn visit_primes(&mut self, content: &Content) -> Node {
-        unimplemented!()
+        Node::Node(node)
     }
 
     fn visit_root(&mut self, content: &Content) -> Node {
