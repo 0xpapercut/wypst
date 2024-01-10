@@ -74,12 +74,6 @@ pub enum Node {
     XArrow(XArrow),
 }
 
-impl std::fmt::Debug for Node {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", serde_json::to_value(&self).unwrap())
-    }
-}
-
 #[derive(Clone, Serialize, Builder)]
 #[builder(setter(into))]
 #[serde(rename_all = "camelCase")]
@@ -708,3 +702,15 @@ into_node!(
     VCenter,
     XArrow
 );
+
+impl std::fmt::Debug for Node {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", serde_json::to_value(&self).unwrap())
+    }
+}
+
+impl Node {
+    pub fn children() -> NodeArray {
+        unimplemented!()
+    }
+}
