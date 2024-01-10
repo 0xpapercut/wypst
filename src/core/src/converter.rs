@@ -168,8 +168,19 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_math_style(&mut self, content: &Content) -> Node {
         let elem = content.to_math_style();
 
-        let body = elem.body().accept(self).as_node().map(Box::new).unwrap();
-        let font = match elem.variant(self.styles) {
+        let _body = elem.body();
+        let _variant = elem.variant(self.styles);
+        let _bold = elem.bold(self.styles); // unsupported
+        let _italic = elem.italic(self.styles); // unsupported
+        let _size = elem.size(self.styles); // unsupported
+        let _cramped = elem.cramped(self.styles); // unsupported
+        if _bold.is_some() { warn!("Bold options are unsupported."); }
+        if _italic.is_some() { warn!("Italic options are unsupported."); }
+        if _size.is_some() { warn!("Size options are unsupported."); }
+        if _cramped.is_some() { warn!("Cramped options are unsupported."); }
+
+        let body = _body.accept(self).into_node().unwrap();
+        let font = match _variant {
             Some(typst::math::MathVariant::Bb) => "mathbb",
             Some(typst::math::MathVariant::Cal) => "mathcal",
             Some(typst::math::MathVariant::Serif) => unimplemented!(),
@@ -179,19 +190,11 @@ impl ContentVisitor for ContentConverter<'_> {
             None => "mathrm"
         }.to_string();
 
-        Node::Node(katex::FontBuilder::default()
-            .body(body)
+        let node = katex::FontBuilder::default()
+            .body(Box::new(body))
             .font(font)
-            .build().unwrap().into_node()
-        )
-    }
-
-    fn visit_h(&mut self, content: &Content) -> Node {
-        Node::Array(Vec::new())
-    }
-
-    fn visit_accent(&mut self, content: &Content) -> Node {
-        unimplemented!()
+            .build().unwrap().into_node();
+        Node::Node(node)
     }
 
     fn visit_binom(&mut self, content: &Content) -> Node {
