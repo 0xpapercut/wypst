@@ -369,27 +369,21 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_underbrace(&mut self, content: &Content) -> Node {
         let elem = content.to_underbrace();
 
-        let inner_base_body = elem.body().accept(self).as_array();
-        let inner_base = katex::OrdGroupBuilder::default()
-            .body(inner_base_body)
-            .build().unwrap().into_node();
+        let _body = elem.body();
+        let _annotation = elem.annotation(self.styles);
+
         let base = katex::HorizBraceBuilder::default()
-            .label("\\underbrace".to_string())
+            .base(_body.accept(self).into_ordgroup(katex::Mode::Math).into_node())
             .is_over(false)
-            .base(inner_base)
+            .label("\\underbrace".to_string())
             .build().unwrap().into_node();
+        let sub = _annotation.map(|c| c.accept(self).into_ordgroup(katex::Mode::Math).into_node());
 
-        let sub_body = elem.annotation(self.styles).unwrap().accept(self).as_array();
-        let sub = katex::OrdGroupBuilder::default()
-            .body(sub_body)
-            .build().unwrap().into_node();
-
-        let supsub = katex::SupSubBuilder::default()
+        let node = katex::SupSubBuilder::default()
             .base(Box::new(base))
-            .sub(Box::new(sub))
+            .sub(sub.map(Box::new))
             .build().unwrap().into_node();
-
-        Node::Node(supsub)
+        Node::Node(node)
     }
 
     fn visit_underline(&mut self, content: &Content) -> Node {
