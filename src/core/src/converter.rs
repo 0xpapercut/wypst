@@ -223,7 +223,6 @@ impl ContentVisitor for ContentConverter<'_> {
     }
 
     fn visit_cancel(&mut self, content: &Content) -> Node {
-        // Does not support: length, inverted, cross, angle, stroke.
         let elem = content.to_cancel();
 
         let _body = elem.body();
@@ -237,12 +236,11 @@ impl ContentVisitor for ContentConverter<'_> {
             .body(_body.accept(self).into_array())
             .build().unwrap().into_node();
 
-        let enclose = katex::EncloseBuilder::default()
+        let node = katex::EncloseBuilder::default()
             .label("\\cancel")
-            .body(ordgroup)
+            .body(body)
             .build().unwrap().into_node();
-
-        Node::Node(enclose)
+        Node::Node(node)
     }
 
     fn visit_cases(&mut self, content: &Content) -> Node {
