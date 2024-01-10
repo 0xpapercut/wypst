@@ -130,12 +130,13 @@ impl ContentVisitor for ContentConverter<'_> {
             katex::Node::Atom(atom) => atom.text,
             _ => panic!("Not an atom!"),
         };
-        let leftright = katex::LeftRightBuilder::default()
+
+        let node = katex::LeftRightBuilder::default()
             .body(body)
             .left(left)
             .right(right)
             .build().unwrap().into_node();
-        Node::Node(leftright)
+        Node::Node(node)
     }
 
     fn visit_attach(&mut self, content: &Content) -> Node {
