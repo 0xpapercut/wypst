@@ -93,8 +93,8 @@ impl ContentVisitor for ContentConverter<'_> {
     }
 
     fn visit_align_point(&mut self, content: &Content) -> Node {
-        let ordgroup = katex::OrdGroupBuilder::default().build().unwrap().into_node();
-        Node::Node(ordgroup)
+        let node = katex::OrdGroupBuilder::default().build().unwrap().into_node();
+        Node::Node(node)
     }
 
     fn visit_linebreak(&mut self, content: &Content) -> Node {
