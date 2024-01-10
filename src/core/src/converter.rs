@@ -29,13 +29,16 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_op(&mut self, content: &Content) -> Node {
         let elem = content.to_op();
 
-        let op = katex::OpBuilder::default()
-            .limits(true)
+        let _text = elem.text();
+        let _limits = elem.limits(self.styles);
+
+        let node = katex::OpBuilder::default()
+            .limits(_limits)
             .parent_is_sup_sub(false)
             .symbol(false)
-            .name(format!("\\{}", elem.text().plain_text()))
+            .name(format!("\\{}", _text.plain_text()))
             .build().unwrap().into_node();
-        Node::Node(op)
+        Node::Node(node)
     }
 
     fn visit_mat(&mut self, content: &Content) -> Node {
