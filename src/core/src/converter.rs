@@ -509,7 +509,7 @@ impl<'a> SequenceConverter<'a> {
         if self.body.is_empty() {
             self.body.push(Vec::new())
         }
-        let nodes = self.stack.iter().map(|n| n.clone().as_array()).flatten().collect();
+        let nodes = self.stack.iter().map(|n| n.clone().into_array()).flatten().collect();
         self.body.last_mut().unwrap().push(Node::Array(nodes));
         self.stack.clear();
     }
@@ -538,7 +538,7 @@ impl<'a> CasesConverter<'a> {
             constructor.next_row();
             for node in row {
                 let ordgroup = katex::OrdGroupBuilder::default()
-                    .body(node.clone().as_array())
+                    .body(node.clone().into_array())
                     .build().unwrap().into_node();
                 let styling = katex::StylingBuilder::default()
                     .style(katex::StyleStr::Text)
@@ -580,7 +580,7 @@ impl<'a> CasesConverter<'a> {
                 converter.process_sequence_elements(visitor);
                 self.body.extend(converter.body);
             } else {
-                
+                self.body.push([child.accept(visitor)].to_vec());
             }
         }
     }
@@ -602,7 +602,7 @@ impl<'a> VecConverter<'a> {
 
         for content in self.elem.children() {
             constructor.next_row();
-            let node = content.accept(visitor).as_node().unwrap();
+            let node = content.accept(visitor).into_node().unwrap();
             let ordgroup = katex::OrdGroupBuilder::default()
                 .body([node].to_vec())
                 .build().unwrap().into_node();
