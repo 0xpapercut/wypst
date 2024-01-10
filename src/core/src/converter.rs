@@ -395,13 +395,10 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_underline(&mut self, content: &Content) -> Node {
         let elem = content.to_underline();
 
-        let ordgroup_body = elem.body().accept(self).as_array();
-        let ordgroup = katex::OrdGroupBuilder::default()
-            .body(ordgroup_body)
-            .build().unwrap().into_node();
+        let _body = elem.body();
 
-        let underline = katex::UnderlineBuilder::default()
-            .body(ordgroup)
+        let node = katex::UnderlineBuilder::default()
+            .body(_body.accept(self).into_ordgroup(katex::Mode::Math).into_node())
             .build().unwrap().into_node();
         Node::Node(node)
     }
