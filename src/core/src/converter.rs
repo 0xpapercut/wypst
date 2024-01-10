@@ -283,19 +283,15 @@ impl ContentVisitor for ContentConverter<'_> {
     }
 
     fn visit_mid(&mut self, content: &Content) -> Node {
-        unimplemented!()
-    }
-
-
-    fn visit_mid(&mut self, content: &Content) -> Node {
         let elem = content.to_mid();
 
-        let delim = elem.body().plain_text().to_string();
-        let middle = katex::MiddleBuilder::default()
+        let _body = elem.body();
+
+        let delim = _body.plain_text().to_string();
+        let node = katex::MiddleBuilder::default()
             .delim(delim)
             .build().unwrap().into_node();
-
-        Node::Node(middle)
+        Node::Node(node)
     }
 
     fn visit_overbrace(&mut self, content: &Content) -> Node {
