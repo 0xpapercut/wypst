@@ -403,6 +403,27 @@ impl ContentVisitor for ContentConverter<'_> {
         Node::Node(node)
     }
 
+    fn visit_h(&mut self, content: &Content) -> Node {
+        let elem = content.to_h();
+
+        let _amount = elem.amount();
+        let _weak = elem.weak(self.styles); // unsupported
+
+        let length = match _amount {
+            typst::layout::Spacing::Fr(fr) => unimplemented!(),
+            typst::layout::Spacing::Rel(rel) => rel.abs,
+        };
+
+        let node = katex::KernBuilder::default()
+            .dimension(katex::Measurement {
+                number: length.em.get() as f32,
+                unit: "em".to_string(),
+            })
+            .mode(katex::Mode::Math)
+            .build().unwrap().into_node();
+        Node::Node(node)
+    }
+
     fn visit_underbracket(&mut self, content: &Content) -> Node {
         // unsupported
         unimplemented!()
