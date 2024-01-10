@@ -43,6 +43,7 @@ pub enum Node {
     Font(Font),
     GenFrac(GenFrac),
     HBox(HBox),
+    #[serde(rename = "horizBrace")]
     HorizBrace(HorizBrace),
     HRef(HRef),
     Html(Html),
