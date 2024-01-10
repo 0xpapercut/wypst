@@ -346,24 +346,17 @@ impl ContentVisitor for ContentConverter<'_> {
     fn visit_root(&mut self, content: &Content) -> Node {
         let elem = content.to_root();
 
-        let index_body = elem.index(self.styles).map(|n| n.accept(self).as_array());
-        let index = match index_body {
-            Some(arr) => Some(katex::OrdGroupBuilder::default()
-                .body(arr)
-                .build().unwrap().into_node()),
-            None => None,
-        };
+        let _index = elem.index(self.styles);
+        let _radicand = elem.radicand();
 
-        let body = katex::OrdGroupBuilder::default()
-            .body(elem.radicand().accept(self).as_array())
-            .build().unwrap().into_node();
+        let index = _index.map(|c| c.accept(self).into_ordgroup(katex::Mode::Math).into_node());
+        let body = _radicand.accept(self).into_ordgroup(katex::Mode::Math).into_node();
 
-        let sqrt = katex::SqrtBuilder::default()
-            .body(body)
+        let node = katex::SqrtBuilder::default()
+            .body(Box::new(body))
             .index(index.map(Box::new))
             .build().unwrap().into_node();
-
-        Node::Node(sqrt)
+        Node::Node(node)
     }
 
     fn visit_underbrace(&mut self, content: &Content) -> Node {
