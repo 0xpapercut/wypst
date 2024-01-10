@@ -1,3 +1,5 @@
+use log::warn;
+
 use typst;
 use typst::foundations::Content;
 
