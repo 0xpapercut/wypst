@@ -8,6 +8,7 @@ use crate::node::*;
 use crate::content::*;
 use crate::ext::*;
 use crate::utils::insert_separator;
+use crate::symbol;
 
 pub fn convert(root: &Content) -> Node {
     let styles = typst::foundations::StyleChain::default();
@@ -690,6 +691,10 @@ impl<'a> TextConverter<'a> {
     }
 
     pub fn convert_char(&mut self, name: char, mode: katex::Mode) -> Node {
-        Node::Node(katex::Symbol::get(mode, name).create_node())
+        match name {
+            '≔' => symbol::define(),
+            '≠' => symbol::neq(),
+            _ => Node::Node(katex::Symbol::get(mode, name).create_node())
+        }
     }
 }

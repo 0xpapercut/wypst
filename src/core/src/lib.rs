@@ -9,6 +9,7 @@ mod utils;
 mod node;
 mod ext;
 mod content;
+mod symbol;
 
 #[macro_use]
 extern crate derive_builder;

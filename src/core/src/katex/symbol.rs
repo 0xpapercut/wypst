@@ -96,9 +96,6 @@ impl<'a> Symbol {
         if math_text.contains(name) && mode == Mode::Math {
             return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::TextOrd), name);
         }
-        // if name == '≔' && mode == Mode::Math {
-        //     return Symbol::new(Mode::Math, Font::Main, Group::NonAtom(NonAtomGroup::OpToken), name);
-        // }
         //// --- AUTO GENERATED CODE --- ////
         if mode == Mode::Math && name == '≡' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≡'); }
         if mode == Mode::Math && name == '≺' { return Symbol::new(Mode::Math, Font::Main, Group::Atom(AtomGroup::Rel), '≺'); }
