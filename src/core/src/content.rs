@@ -141,7 +141,7 @@ impl ContentType for Content {
         self.is::<typst::math::CasesElem>()
     }
     fn is_overbracket(&self) -> bool {
-        self.is::<typst::math::OverbraceElem>()
+        self.is::<typst::math::OverbracketElem>()
     }
     fn is_underbracket(&self) -> bool {
         self.is::<typst::math::UnderbracketElem>()
