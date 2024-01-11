@@ -127,6 +127,24 @@ impl ContentVisitor for ContentConverter<'_> {
         let _size = elem.size(self.styles); // unsupported
 
         let mut body = _body.accept(self).into_array();
+
+        // TODO: Another case to treat is when there's a styling node (\textstyle) as parent,
+        // and in this case maybe a context object will be needed.
+        let mut is_lr = false;
+        for n in body.clone() {
+            match n {
+                katex::Node::Atom(_) |
+                katex::Node::MathOrd(_) |
+                katex::Node::TextOrd(_) |
+                katex::Node::Font(_) => (),
+                _ => { is_lr = true; },
+            }
+        }
+
+        if !is_lr {
+            return Node::Array(body.clone());
+        }
+
         let left = match body.remove(0) {
             katex::Node::Atom(atom) => atom.text,
             _ => panic!("Not an atom!"),
