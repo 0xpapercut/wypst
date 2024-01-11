@@ -34,11 +34,13 @@ impl ContentVisitor for ContentConverter<'_> {
         let _text = elem.text();
         let _limits = elem.limits(self.styles);
 
+        let name = format!("\\{}", _text.plain_text()).to_string();
+
         let node = katex::OpBuilder::default()
             .limits(_limits)
             .parent_is_sup_sub(false)
             .symbol(false)
-            .name(format!("\\{}", _text.plain_text()))
+            .name(Some(name))
             .build().unwrap().into_node();
         Node::Node(node)
     }
@@ -93,6 +95,10 @@ impl ContentVisitor for ContentConverter<'_> {
         let node = katex::GenFracBuilder::default()
             .numer(Box::new(numer))
             .denom(Box::new(denom))
+            .mode(katex::Mode::Math)
+            .has_bar_line(true)
+            .size(katex::GenFracSizeType::Auto)
+            .continued(false)
             .build().unwrap().into_node();
         Node::Node(node)
     }
@@ -265,8 +271,8 @@ impl ContentVisitor for ContentConverter<'_> {
             .build().unwrap().into_node();
 
         let node = katex::EncloseBuilder::default()
-            .label("\\cancel")
-            .body(body)
+            .label("\\cancel".to_string())
+            .body(Box::new(body))
             .build().unwrap().into_node();
         Node::Node(node)
     }
@@ -282,13 +288,15 @@ impl ContentVisitor for ContentConverter<'_> {
         let _body = elem.body();
         let _inline = elem.inline(self.styles); // unsupported
 
+        let body = _body.accept(self).into_array();
+
         // This comes inside an AttachElem, so we have to transform this into an operator
         let node = katex::OpBuilder::default()
             .mode(katex::Mode::Math)
             .limits(true)
             .parent_is_sup_sub(false)
             .symbol(false)
-            .body(_body.accept(self).into_array())
+            .body(Some(body))
             .build().unwrap().into_node();
         Node::Node(node)
     }
@@ -298,12 +306,14 @@ impl ContentVisitor for ContentConverter<'_> {
 
         let _body = elem.body();
 
+        let body = _body.accept(self).into_array();
+
         let node = katex::OpBuilder::default()
             .mode(katex::Mode::Math)
             .limits(false)
             .parent_is_sup_sub(false)
             .symbol(false)
-            .body(_body.accept(self).into_array())
+            .body(Some(body))
             .build().unwrap().into_node();
         Node::Node(node)
     }
@@ -329,7 +339,7 @@ impl ContentVisitor for ContentConverter<'_> {
         let base = katex::HorizBraceBuilder::default()
             .label("\\overbrace".to_string())
             .is_over(true)
-            .base(_body.accept(self).into_ordgroup(katex::Mode::Math).into_node())
+            .base(Box::new(_body.accept(self).into_ordgroup(katex::Mode::Math).into_node()))
             .build().unwrap().into_node();
         let sup = _annotation.map(|c| c.accept(self).into_ordgroup(katex::Mode::Math).into_node());
 
@@ -375,7 +385,7 @@ impl ContentVisitor for ContentConverter<'_> {
         let _annotation = elem.annotation(self.styles);
 
         let base = katex::HorizBraceBuilder::default()
-            .base(_body.accept(self).into_ordgroup(katex::Mode::Math).into_node())
+            .base(Box::new(_body.accept(self).into_ordgroup(katex::Mode::Math).into_node()))
             .is_over(false)
             .label("\\underbrace".to_string())
             .build().unwrap().into_node();
@@ -393,8 +403,10 @@ impl ContentVisitor for ContentConverter<'_> {
 
         let _body = elem.body();
 
+        let body = _body.accept(self).into_ordgroup(katex::Mode::Math).into_node();
+
         let node = katex::UnderlineBuilder::default()
-            .body(_body.accept(self).into_ordgroup(katex::Mode::Math).into_node())
+            .body(Box::new(body))
             .build().unwrap().into_node();
         Node::Node(node)
     }
