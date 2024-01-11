@@ -53,36 +53,35 @@ impl<'a> Symbol {
     pub fn create_node(self: Self) -> Node {
         match self.group {
             Group::Atom(group) => {
-                Node::Atom(Atom {
-                    family: group,
-                    mode: self.mode,
-                    loc: None,
-                    text: String::from(self.name)
-                })
+                AtomBuilder::default()
+                    .family(group)
+                    .mode(self.mode)
+                    .text(self.name.to_string())
+                    .build().unwrap().into_node()
             },
             Group::NonAtom(group) => {
                 match group {
-                    NonAtomGroup::MathOrd => Node::MathOrd(MathOrd {
-                        mode: self.mode,
-                        loc: None,
-                        text: String::from(self.name)
-                    }),
-                    NonAtomGroup::OpToken => Node::Op(Op {
-                        mode: self.mode,
-                        loc: None,
-                        limits: false,
-                        always_handle_sup_sub: None,
-                        parent_is_sup_sub: false,
-                        suppress_base_shift: None,
-                        symbol: true,
-                        name: String::from(self.name),
-                        body: None,
-                    }),
-                    NonAtomGroup::TextOrd => Node::TextOrd(TextOrd {
-                        mode: self.mode,
-                        loc: None,
-                        text: String::from(self.name)
-                    }),
+                    NonAtomGroup::MathOrd => {
+                        MathOrdBuilder::default()
+                            .mode(self.mode)
+                            .text(self.name.to_string())
+                            .build().unwrap().into_node()
+                    },
+                    NonAtomGroup::OpToken => {
+                        OpBuilder::default()
+                            .mode(self.mode)
+                            .limits(true)
+                            .parent_is_sup_sub(false)
+                            .symbol(true)
+                            .name(Some(self.name.to_string()))
+                            .build().unwrap().into_node()
+                    },
+                    NonAtomGroup::TextOrd => {
+                        TextOrdBuilder::default()
+                            .mode(self.mode)
+                            .text(self.name.to_string())
+                            .build().unwrap().into_node()
+                    },
                     NonAtomGroup::AccentToken => unimplemented!(),
                     NonAtomGroup::Spacing => unimplemented!(),
                 }
