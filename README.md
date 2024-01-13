@@ -15,3 +15,6 @@ wypst is not yet ready to be used. It is expected to be usable at start of febru
 The focus is to provide a complete, working implementation for a subset of the math syntax of typst. When it is ready, this subset will be explicitly described.
 
 Finally, the rendering process is expected to have equivalent speed to that of KaTeX. Once appropriate I'll share benchmarks.
+
+## Working expressions
+- A = pi r^2
