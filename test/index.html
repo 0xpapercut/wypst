@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug wypst</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.13.18/dist/katex.min.css">
+    <style>
+        body {
+            display: flex;
+            position: relative;
+        }
+        #katex, #typst, #wypst {
+            flex: 1;
+        }
+        #render {
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="render"></div>
+    <div id="katex">
+        <input type="text" id="input">
+        <p id="output"></p>
+    </div>
+    <div id="wypst">
+        <input type="text" id="input">
+        <p id="output"></p>
+    </div>
+    <div id="typst">
+        <p id="typst-output"></p>
+    </div>
+</body>
+</html>
