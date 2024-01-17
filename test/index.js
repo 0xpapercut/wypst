@@ -25,36 +25,32 @@ function katexRender() {
 
         try {
             katex.render(input.value, renderDiv, {displayMode: true});
-        } catch (error) { }
+        } catch (error) { console.log(error); }
     });
 }
 katexRender();
 
 function wypstRender() {
-    console.log(wypst);
-    console.log(wypst.renderToString("x"));
-    // console.log(hello)
-    // hello();
-    // console.log(parseTree);
-    // console.log(parseTree('x'));
-    // await wypst.loadTypst();
-    // let wypstDiv = document.getElementById('wypst');
+    let wypstDiv = document.getElementById('wypst');
 
-    // let input = wypstDiv.querySelector('#input');
-    // let output = wypstDiv.querySelector('#output');
+    let input = wypstDiv.querySelector('#input');
+    let output = wypstDiv.querySelector('#output');
 
-    // input.addEventListener('input', function() {
-    //     console.log(input.value);
-    //     wypst.parseTree(input.value);
+    input.addEventListener('input', function() {
+        console.log(input.value);
+        try {
+            let tree = wypst.parseTree(input.value);
+            tree = JSON.stringify(tree, null, 2);
+            tree = tree.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+            output.innerHTML = tree;
+        } catch (error) {
+            console.log(error);
+        }
 
-        // try {
-            // let tree = wypst.parseTree(input.value);
-            // tree = JSON.stringify(tree, null, 2);
-            // tree = tree.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
-            // output.innerHTML = tree;
-        // } catch (error) {
-            // console.log(error);
-        // }
+        try {
+            wypst.render(input.value, renderDiv, {displayMode: true});
+        } catch (error) { console.log(error); }
+    });
 
         // try {
         //     wypst.render(input.value, renderDiv, {displayMode: true});
