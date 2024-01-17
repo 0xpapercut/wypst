@@ -1,7 +1,6 @@
 [package]
-name = "typst-math-transpiler-core"
+name = "core"
 version = "0.1.0"
-authors = ["André Dal Bosco <andredbsc@gmail.com>"]
 edition = "2021"
 
 [lib]
@@ -21,6 +20,8 @@ js-sys = "0.3.64"
 phf = "0.11.2"
 serde_json = "1.0.108"
 comemo = "0.3.1"
+derive_builder = "0.12.0"
+log = "0.4.20"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.34"
