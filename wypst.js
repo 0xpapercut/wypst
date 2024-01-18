@@ -1,8 +1,8 @@
-import { parseTree } from './src/core/pkg';
+import init, { parseTree } from './src/core/pkg';
 import katex from './src/katex';
 
 function renderToDomTree(expression, options) {
-    let settings = new katex.Settings({});
+    let settings = new katex.Settings(options);
     try {
         const tree = parseTree(expression, settings);
         return katex.buildTree(tree, expression, settings);
@@ -12,7 +12,7 @@ function renderToDomTree(expression, options) {
 }
 
 function renderError(error, expression, options) {
-    // TODO
+    console.log(error);
 }
 
 /**
@@ -23,7 +23,7 @@ function renderError(error, expression, options) {
  */
 function render(expression, baseNode, options) {
     baseNode.textContent = "";
-    const node = renderToDomTree(expression).toNode();
+    const node = renderToDomTree(expression, options).toNode();
     baseNode.appendChild(node);
 };
 
@@ -44,4 +44,5 @@ export default {
     render,
     renderToString,
     parseTree,
+    init
 };
