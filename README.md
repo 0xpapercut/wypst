@@ -6,7 +6,6 @@ Typst math typesetting for the web.
 
 ## Known Issues
 - `sum` is not represented correctly because it doesn't have `limits` set to `true`:
-- The `:=` symbol is not rendered correctly.
 - Spaces around `∣` are eaten up, for example in `{x | x "is natural"}`. Also in the same expression, space between `x` and `"is natural"` is eatuen up as well. This problem extends to some other symbols as well, so any solution must be somewhat general.
 
 ## Disclaimer
