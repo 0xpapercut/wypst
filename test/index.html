@@ -8,31 +8,37 @@
     <style>
         body {
             display: flex;
-            position: relative;
+            flex-direction: column;
+            align-items: center;
+        }
+        #render {
+            margin-bottom: 20px;
+            min-height: 50px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
         }
         #katex, #typst, #wypst {
             flex: 1;
-        }
-        #render {
-            position: absolute;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
         }
     </style>
 </head>
 <body>
     <div id="render"></div>
-    <div id="katex">
-        <input type="text" id="input">
-        <p id="output"></p>
-    </div>
-    <div id="wypst">
-        <input type="text" id="input">
-        <p id="output"></p>
-    </div>
-    <div id="typst">
-        <p id="typst-output"></p>
+    <div class="container">
+        <div id="katex">
+            <input type="text" id="input">
+            <p id="output"></p>
+        </div>
+        <div id="wypst">
+            <input type="text" id="input">
+            <p id="output"></p>
+        </div>
+        <div id="typst">
+            <p id="output"></p>
+        </div>
     </div>
 </body>
 </html>
