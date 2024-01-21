@@ -12,7 +12,7 @@ function renderToDomTree(expression, options) {
 }
 
 function renderError(error, expression, options) {
-    console.log(error);
+    throw new Error(error);
 }
 
 /**
