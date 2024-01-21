@@ -110,7 +110,10 @@ impl ContentVisitor for ContentConverter<'_> {
     }
 
     fn visit_linebreak(&mut self, content: &Content) -> Node {
-        Node::Array(Vec::new())
+        let node = katex::CrBuilder::default()
+            .new_line(true)
+            .build().unwrap().into_node();
+        Node::Array(vec![node])
     }
 
     fn visit_sequence(&mut self, content: &Content) -> Node {
