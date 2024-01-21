@@ -4,9 +4,9 @@
   "description": "Transpile typst math expressions to KaTeX.",
   "scripts": {
     "start": "cd dist && python3 -m http.server 1234",
-    "build": "webpack",
     "scripts": "webpack --config=scripts.config.js",
-    "test": "null"
+    "wasm-dev": "cd src/core && wasm-pack build --target web --dev",
+    "dev": "npm run wasm-dev && cd test && npx webpack serve"
   },
   "main": "wypst.js",
   "module": "wypst.js",
