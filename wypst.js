@@ -1,4 +1,4 @@
-import init, { parseTree } from './src/core/pkg';
+import init, { parseTree, typstContentTree } from './src/core/pkg';
 import katex from './src/katex';
 
 function renderToDomTree(expression, options) {
@@ -44,5 +44,6 @@ export default {
     render,
     renderToString,
     parseTree,
-    init
+    init,
+    __typstContentTree: typstContentTree,
 };
