@@ -351,6 +351,7 @@ pub struct AccentUnder {
 }
 
 #[derive(Clone, Serialize, Builder)]
+#[serde(rename_all = "camelCase")]
 pub struct Cr {
     #[builder(default = "Mode::Math")]
     pub mode: Mode,

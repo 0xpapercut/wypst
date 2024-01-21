@@ -42,7 +42,7 @@ impl World for FakeWorld {
     }
 }
 
-pub fn eval(world: &dyn typst::World, string: &str) -> typst::foundations::Content {
+pub fn eval(world: &dyn typst::World, string: &str) -> Result<typst::foundations::Content, String> {
     // Make engine
     let introspector = typst::introspection::Introspector::default();
     let mut locator = typst::introspection::Locator::default();
@@ -62,10 +62,14 @@ pub fn eval(world: &dyn typst::World, string: &str) -> typst::foundations::Conte
         typst::syntax::Span::detached(),
         typst::eval::EvalMode::Math,
         world.library().math.scope().clone()
-    ).unwrap();
+    );
+
     match result {
-        typst::foundations::Value::Content(content) => content,
-        _ => panic!(),
+        Ok(value) => match value {
+            typst::foundations::Value::Content(content) => Ok(content),
+            _ => Err("Expected content result.".to_string()),
+        }
+        Err(err) => Err(err[0].message.to_string())
     }
 }
 

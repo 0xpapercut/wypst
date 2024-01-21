@@ -312,7 +312,10 @@ impl ContentExt for Content {
             _ if self.is_scripts() => visitor.visit_scripts(self),
             _ if self.is_primes() => visitor.visit_primes(self),
             _ if self.is_accent() => visitor.visit_accent(self),
-            _ => panic!("Content element `{:#?}` not implemented yet.", self),
+            // This ignores the elements and gracefully fails;
+            // Must add results and errors eventually.
+            _ => Node::Array(vec![]),
+            // _ => panic!("Content element `{:#?}` not implemented yet.", self),
         }
     }
 }

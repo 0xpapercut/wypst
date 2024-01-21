@@ -1,5 +1,5 @@
 use serde::Serialize;
-use crate::katex::{self, Align};
+use crate::katex;
 
 #[derive(Clone, Serialize)]
 #[serde(untagged)]
@@ -23,6 +23,7 @@ impl Node {
             Node::Node(node) => Ok(node),
             Node::Array(array) => {
                 if array.len() == 1 {
+                    // TODO: Must check if this code makes sense
                     Ok(array.iter().next().cloned().unwrap())
                 } else {
                     Err("Cannot convert an array with more than one element to a single node")
@@ -52,9 +53,9 @@ impl Node {
         }
     }
 
-    pub fn join(&mut self, node: Node) {
-        let mut arr = self.clone().as_array();
-        arr.append(&mut node.as_array());
-        *self = Node::Array(arr);
-    }
+    // pub fn join(&mut self, node: Node) {
+    //     let mut arr = self.clone().as_array();
+    //     arr.append(&mut node.as_array());
+    //     *self = Node::Array(arr);
+    // }
 }

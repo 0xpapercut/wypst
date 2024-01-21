@@ -32,20 +32,25 @@ global.getRustGroup = function(group) {
     }
 }
 
-global.combinations = new Set()
+global.combinations = new Object();
 
-function newDefineSymbol(mode, font, group, replace, ...args) {
+function newDefineSymbol(mode, font, group, replace, name, ...args) {
     let rustMode = mode === 'math' ? 'Mode::Math' : 'Mode::Text';
     let rustFont = font === 'main' ? 'Font::Main' : 'Font::Ams';
     let rustGroup = getRustGroup(group);
     if (replace === null)
         return
     let rustName = replace === '\\' ? '\\\\' : replace;
-    if (global.combinations.has(JSON.stringify([rustMode, rustName])))
-        return;
-    global.combinations.add(JSON.stringify([rustMode, rustName]));
+    if (replace === '0') {
+        console.log('0');
+    }
+    if (replace === 'A') {
+        console.log(mode, font, group);
+    }
     let rustLine = `if mode == ${rustMode} && name == '${rustName}' { return Symbol::new(${rustMode}, ${rustFont}, ${rustGroup}, '${rustName}'); }`;
-    rustLines.push(rustLine);
+    global.combinations[JSON.stringify([rustMode, rustName])] = rustLine;
+    // global.combinations.add(JSON.stringify([rustMode, rustName]));
+    // rustLines.push(rustLine);
 }
 
 console.log('Im here');
@@ -76,6 +81,7 @@ const blockStartIndex = lines.findIndex(line => line.includes(blockStart));
 const blockEndIndex = lines.findIndex(line => line.includes(blockEnd));
 
 let indentationSpace = lines[blockStartIndex].slice(0, lines[blockStartIndex].indexOf(blockStart));
+global.rustLines = Object.values(global.combinations);
 let rustLines = global.rustLines.map(s => indentationSpace + s);
 lines = lines.slice(0, blockStartIndex + 1).concat(rustLines).concat(lines.slice(blockEndIndex));
 
