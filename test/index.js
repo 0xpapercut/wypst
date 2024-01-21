@@ -1,5 +1,4 @@
-import katexParseTree from 'katex/src/parseTree';
-import katex from 'katex';
+import katex from '../src/katex';
 import wypst from 'wypst';
 import { deleteFields } from './utils';
 
@@ -12,17 +11,18 @@ function katexRender() {
     let output = katexDiv.querySelector('#output');
 
     input.addEventListener('input', function() {
-        console.log(input.value);
+        // Print KaTeX parse tree
         try {
-            let tree = katexParseTree(input.value, {displayMode: true});
+            let tree = katex.parseTree(input.value, new katex.Settings({displayMode: true, strict: "ignore"}));
             deleteFields(tree, ['loc']);
-            tree = JSON.stringify(tree, null, 2);
-            tree = tree.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
-            output.innerHTML = tree;
+
+            let treeHTML = prettyJsonToHtml(tree);
+            output.innerHTML = treeHTML;
         } catch (error) {
             output.innerHTML = error;
         }
 
+        // Render the equation
         try {
             katex.render(input.value, renderDiv, {displayMode: true});
         } catch (error) { console.log(error); }
@@ -30,40 +30,48 @@ function katexRender() {
 }
 katexRender();
 
-function wypstRender() {
+async function wypstRender() {
     let wypstDiv = document.getElementById('wypst');
+    let typstDiv = document.getElementById('typst');
 
     let input = wypstDiv.querySelector('#input');
-    let output = wypstDiv.querySelector('#output');
+    let wypstOutput = wypstDiv.querySelector('#output');
+    let typstOutput = typstDiv.querySelector('#output');
 
-    input.addEventListener('input', function() {
-        console.log(input.value);
+    await wypst.init();
+    input.addEventListener('input', async function() {
+        // Print Typst parse tree (in KaTeX representation)
         try {
             let tree = wypst.parseTree(input.value);
-            tree = JSON.stringify(tree, null, 2);
-            tree = tree.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
-            output.innerHTML = tree;
+            let treeHTML = prettyJsonToHtml(tree);
+
+            wypstOutput.innerHTML = treeHTML;
         } catch (error) {
-            console.log(error);
+            wypstOutput.innerHTML = error;
         }
 
+        // Print Typst content tree
+        try {
+            let tree = wypst.__typstContentTree(input.value);
+            let treeHTML = prettyStringToHtml(tree);
+            typstOutput.innerHTML = treeHTML;
+        } catch (error) {
+            typstOutput.innerHTML = '';
+         }
+
+        // Render the equation
         try {
             wypst.render(input.value, renderDiv, {displayMode: true});
-        } catch (error) { console.log(error); }
+        } catch (error) { }
     });
-
-        // try {
-        //     wypst.render(input.value, renderDiv, {displayMode: true});
-        // } catch (error) { }
-    // })
-    // console.log(render);
-    // console.log(wypst.render);
-    // let wypstDiv = document.getElementById('wypst');
-    // let typstDiv = document.getElementById('typst');
-
-    // let input = wypstDiv.querySelector('#input');
-
-    // console.log(loadTypst);
-    // loadTypst().then(x => console.log(x));
 }
 wypstRender()
+
+function prettyJsonToHtml(json) {
+    let s = JSON.stringify(json, null, 4);
+    return prettyStringToHtml(s);
+}
+
+function prettyStringToHtml(s) {
+    return s.replace(/\n/g, '<br>').replace(/ /g, '&nbsp;');
+}
