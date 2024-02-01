@@ -1,8 +1,8 @@
 module.exports = {
     entry: './katex.js',
     output: {
-        path: __dirname + '/dist',
-        filename: 'bundle.js',
+        path: __dirname + '/../..',
+        filename: 'katex.js',
         library: 'katex',
         libraryTarget: 'umd',
     },
