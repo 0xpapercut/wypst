@@ -14,7 +14,11 @@
   "module": "wypst.js",
   "files": [
     "wypst.js",
-    "src"
+    "katex.js",
+    "core/core_bg.js",
+    "core/core_bg.wasm",
+    "core/core.js",
+    "core/package.json"
   ],
   "keywords": [
     "typst",

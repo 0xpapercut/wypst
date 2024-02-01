@@ -1,4 +1,6 @@
-import katex from '../src/katex';
+import parseTree from 'katex/src/parseTree';
+import Settings from 'katex/src/Settings';
+import katex from 'katex';
 import wypst from 'wypst';
 import { deleteFields } from './utils';
 
@@ -13,7 +15,7 @@ function katexRender() {
     input.addEventListener('input', function() {
         // Print KaTeX parse tree
         try {
-            let tree = katex.parseTree(input.value, new katex.Settings({displayMode: true, strict: "ignore"}));
+            let tree = parseTree(input.value, new Settings({displayMode: true, strict: "ignore"}));
             deleteFields(tree, ['loc']);
 
             let treeHTML = prettyJsonToHtml(tree);
