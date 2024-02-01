@@ -1,7 +1,7 @@
 {
   "name": "wypst",
   "version": "0.0.1",
-  "description": "Transpile typst math expressions to KaTeX.",
+  "description": "Typst math typesetting for the web.",
   "scripts": {
     "scripts": "webpack --config=scripts.config.js",
     "build-wasm": "cd src/core && wasm-pack build --target web --dev -d ../../core",
