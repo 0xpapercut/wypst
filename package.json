@@ -5,7 +5,7 @@
   "scripts": {
     "start": "cd dist && python3 -m http.server 1234",
     "scripts": "webpack --config=scripts.config.js",
-    "build-wasm": "cd src/core && wasm-pack build --dev -d ../../core",
+    "build-wasm": "cd src/core && wasm-pack build --target web --dev -d ../../core",
     "build-katex": "cd src/katex && npx webpack",
     "build": "npm run build-wasm && npm run build-katex",
     "dev": "npm run build && cd test && npx webpack serve"
