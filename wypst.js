@@ -1,5 +1,5 @@
-import init, { parseTree, typstContentTree } from './src/core/pkg';
-import katex from './src/katex';
+import init, { parseTree, typstContentTree } from './core';
+import katex from './katex';
 
 function renderToDomTree(expression, options) {
     let settings = new katex.Settings(options);
