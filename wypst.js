@@ -33,9 +33,6 @@ function render(expression, baseNode, options) {
  * @param options Render options
  */
 function renderToString(expression, options) {
-    // renderToDomTree()
-    // let x = new katex.Settings({});
-    // return katex.renderToString(expression, options);
     const markup = renderToDomTree(expression, options).toMarkup();
     return markup;
 }
