@@ -3,12 +3,11 @@
   "version": "0.0.1",
   "description": "Transpile typst math expressions to KaTeX.",
   "scripts": {
-    "start": "cd dist && python3 -m http.server 1234",
     "scripts": "webpack --config=scripts.config.js",
     "build-wasm": "cd src/core && wasm-pack build --target web --dev -d ../../core",
-    "build-katex": "cd src/katex && npx webpack",
+    "build-katex": "cd src/katex && webpack",
     "build": "npm run build-wasm && npm run build-katex",
-    "dev": "npm run build && cd test && npx webpack serve"
+    "dev": "npm run build && cd test && webpack serve"
   },
   "main": "wypst.js",
   "module": "wypst.js",
