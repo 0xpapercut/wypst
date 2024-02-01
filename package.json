@@ -5,8 +5,10 @@
   "scripts": {
     "start": "cd dist && python3 -m http.server 1234",
     "scripts": "webpack --config=scripts.config.js",
-    "wasm-dev": "cd src/core && wasm-pack build --target web --dev",
-    "dev": "npm run wasm-dev && cd test && npx webpack serve"
+    "build-wasm": "cd src/core && wasm-pack build --dev -d ../../core",
+    "build-katex": "cd src/katex && npx webpack",
+    "build": "npm run build-wasm && npm run build-katex",
+    "dev": "npm run build && cd test && npx webpack serve"
   },
   "main": "wypst.js",
   "module": "wypst.js",
