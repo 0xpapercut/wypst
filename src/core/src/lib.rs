@@ -32,7 +32,6 @@ pub fn parse_tree(expression: &str) -> Result<JsValue, String> {
     })
 }
 
-#[cfg(debug_assertions)]
 #[wasm_bindgen(js_name = "typstContentTree")]
 pub fn typst_content_tree(expression: &str) -> Result<String, String> {
     let content = content_tree(expression);
