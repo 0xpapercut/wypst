@@ -11,8 +11,15 @@ function renderToDomTree(expression, options) {
     }
 }
 
-function renderError(error, expression, options) {
-    throw new Error(error);
+function renderError(error, expression, settings) {
+    if (settings.throwOnError) {
+        throw new Error(error);
+    } else {
+        let span = document.createElement('span');
+        span.style.color = 'red';
+        span.innerHTML = error.toString();
+        return span;
+    }
 }
 
 /**
