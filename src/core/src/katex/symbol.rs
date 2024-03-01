@@ -51,12 +51,20 @@ impl<'a> Symbol {
     }
 
     pub fn create_node(self: Self) -> Node {
+        let mut name = self.name.to_string();
+        if name == "{" {
+            name = "\\{".to_string();
+        }
+        if name == "}" {
+            name = "\\}".to_string();
+        }
+
         match self.group {
             Group::Atom(group) => {
                 AtomBuilder::default()
                     .family(group)
                     .mode(self.mode)
-                    .text(self.name.to_string())
+                    .text(name)
                     .build().unwrap().into_node()
             },
             Group::NonAtom(group) => {
@@ -64,7 +72,7 @@ impl<'a> Symbol {
                     NonAtomGroup::MathOrd => {
                         MathOrdBuilder::default()
                             .mode(self.mode)
-                            .text(self.name.to_string())
+                            .text(name)
                             .build().unwrap().into_node()
                     },
                     NonAtomGroup::OpToken => {
@@ -73,13 +81,13 @@ impl<'a> Symbol {
                             .limits(true)
                             .parent_is_sup_sub(false)
                             .symbol(true)
-                            .name(Some(self.name.to_string()))
+                            .name(Some(name))
                             .build().unwrap().into_node()
                     },
                     NonAtomGroup::TextOrd => {
                         TextOrdBuilder::default()
                             .mode(self.mode)
-                            .text(self.name.to_string())
+                            .text(name)
                             .build().unwrap().into_node()
                     },
                     NonAtomGroup::AccentToken => unimplemented!(),
