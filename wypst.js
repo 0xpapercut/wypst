@@ -1,24 +1,19 @@
 import init, { parseTree, typstContentTree } from './core';
 import katex from './katex';
 
+function parseTree(expression, settings) {
+    expression = expression.trim().replace(/\n/g, ' ');
+    return _parseTree(expression, settings);
+}
+
 function renderToDomTree(expression, options) {
     let settings = new katex.Settings(options);
     try {
         const tree = parseTree(expression, settings);
         return katex.buildTree(tree, expression, settings);
     } catch (error) {
-        return renderError(error, expression, settings);
-    }
-}
-
-function renderError(error, expression, settings) {
-    if (settings.throwOnError) {
-        throw new Error(error);
-    } else {
-        let span = document.createElement('span');
-        span.style.color = 'red';
-        span.innerHTML = error.toString();
-        return span;
+        // Temporary fix so that we actually see errors like "unknown variable: ..."
+        return katex.renderError(error, error, settings);
     }
 }
 
