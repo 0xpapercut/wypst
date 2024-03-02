@@ -1,4 +1,4 @@
-import init, { parseTree, typstContentTree } from './core';
+import init, { parseTree as _parseTree, typstContentTree } from './core';
 import katex from './katex';
 
 function parseTree(expression, settings) {
