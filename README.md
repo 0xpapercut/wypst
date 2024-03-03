@@ -20,7 +20,7 @@ wypst.renderToString('sum_(n >= 1) 1/n^2 = pi^2/6'); // Renders into an HTML str
 ```
 
 ## Contributing
-> TODO
+All help is welcome. Please see [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Disclaimer
 As of now wypst is very experimental, so you may encounter lots of bugs. I expect to have most fixed by mid March.
