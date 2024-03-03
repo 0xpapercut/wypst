@@ -14,6 +14,8 @@ pub fn convert(root: &Content) -> Node {
     let styles = typst::foundations::StyleChain::default();
     let mut converter = ContentConverter {
         styles: styles,
+        parent: None,
+        position: None
     };
     root.accept(&mut converter)
 }
@@ -21,6 +23,8 @@ pub fn convert(root: &Content) -> Node {
 #[derive(Clone)]
 pub struct ContentConverter<'a> {
     pub styles: typst::foundations::StyleChain<'a>,
+    pub parent: Option<Content>,
+    pub position: Option<usize>,
 }
 
 impl ContentVisitor for ContentConverter<'_> {
