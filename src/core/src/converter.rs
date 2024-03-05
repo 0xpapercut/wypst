@@ -266,11 +266,11 @@ impl ContentVisitor for ContentConverter<'_> {
         let font = match _variant {
             Some(typst::math::MathVariant::Bb) => "mathbb",
             Some(typst::math::MathVariant::Cal) => "mathcal",
-            Some(typst::math::MathVariant::Serif) => unimplemented!(),
-            Some(typst::math::MathVariant::Sans) => unimplemented!(),
-            Some(typst::math::MathVariant::Frak) => unimplemented!(),
-            Some(typst::math::MathVariant::Mono) => unimplemented!(),
-            None => "mathrm"
+            Some(typst::math::MathVariant::Serif) => "mathrm",
+            Some(typst::math::MathVariant::Sans) => "mathsf",
+            Some(typst::math::MathVariant::Frak) => "mathfrak",
+            Some(typst::math::MathVariant::Mono) => "mathtt",
+            None => "mathnormal"
         }.to_string();
 
         let node = katex::FontBuilder::default()
