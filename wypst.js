@@ -1,5 +1,5 @@
 import init, { parseTree as _parseTree, typstContentTree } from './core';
-import katex from './katex';
+import utils from './utils';
 
 function parseTree(expression, settings) {
     expression = expression.trim().replace(/\n/g, ' ');
@@ -7,13 +7,13 @@ function parseTree(expression, settings) {
 }
 
 function renderToDomTree(expression, options) {
-    let settings = new katex.Settings(options);
+    let settings = new utils.Settings(options);
     try {
         const tree = parseTree(expression, settings);
-        return katex.buildTree(tree, expression, settings);
+        return utils.buildTree(tree, expression, settings);
     } catch (error) {
         // Temporary fix so that we actually see errors like "unknown variable: ..."
-        return katex.renderError(error, error, settings);
+        return utils.renderError(error, error, settings);
     }
 }
 
