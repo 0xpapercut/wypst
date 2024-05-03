@@ -1,9 +1,9 @@
-import ParseError from 'katex/src/ParseError';
-import Settings from 'katex/src/Settings';
-import parseTree from 'katex/src/parseTree';
-import buildTree from 'katex/src/buildTree';
-import buildCommon from 'katex/src/buildCommon';
-import { SymbolNode } from 'katex/src/domTree';
+import ParseError from '../lib/katex/src/ParseError';
+import Settings from '../lib/katex/src/Settings';
+import parseTree from '../lib/katex/src/parseTree';
+import buildTree from '../lib/katex/src/buildTree';
+import buildCommon from '../lib/katex/src/buildCommon';
+import { SymbolNode } from '../lib/katex/src/domTree';
 
 function renderError(error, expression, settings) {
     if (settings.throwOnError) {
