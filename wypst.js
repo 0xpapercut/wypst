@@ -41,27 +41,25 @@ function renderToString(expression, options) {
     return markup;
 }
 
-function initialize() {
-    init(wasm);
-}
-
-function debug() {
-    console.log(wasm.slice(10, 100));
+async function initialize(path) {
+    if (path) {
+        await init(path);
+    } else {
+        await init(wasm);
+    }
 }
 
 export default {
     render,
     renderToString,
     parseTree,
-    init,
     __typstContentTree: typstContentTree,
+    initialize,
 };
 
 export {
     render,
     renderToString,
     parseTree,
-    init,
     initialize,
-    debug,
 };
