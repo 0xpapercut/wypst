@@ -6,12 +6,13 @@ You can load this library either by using a script tag, or installing it with np
 
 ### Script tag (simple usage)
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wypst@0.0.5/dist/wypst.min.css" crossorigin="anonymous">
-<script defer src="https://cdn.jsdelivr.net/npm/wypst@0.0.5/dist/wypst.min.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wypst@0.0.6/dist/wypst.min.css" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/wypst@0.0.6/dist/wypst.min.js" crossorigin="anonymous"></script>
 
 <script>
-    wypst.initialize();
-    wypst.renderToString(); // Test it out!
+    wypst.initialize().then(() => {
+        wypst.renderToString("x + y"); // Test it out!
+    })
 </script>
 ```
 
@@ -24,12 +25,12 @@ npm install wypst
 ```
 
 You may then load the wasm binary
-```
+```javascript
 import wypst from 'wypst';
 import wasm from 'wypst/dist/wypst.wasm';
 
-wypst.initialize(wasm);
-wypst.renderToString("x + y") // Test it out!
+await wypst.initialize(wasm);
+wypst.renderToString("x + y"); // Test it out!
 ```
 
 ### Rendering Typst Math
