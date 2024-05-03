@@ -37,5 +37,5 @@ esbuild.build({
 });
 
 // Copy CSS files
-fs.copyFileSync('node_modules/katex/dist/katex.css', 'dist/wypst.css');
-fs.copyFileSync('node_modules/katex/dist/katex.min.css', 'dist/wypst.min.css');
+fs.copyFileSync('./node_modules/katex/dist/katex.css', './dist/wypst.css');
+fs.copyFileSync('./node_modules/katex/dist/katex.min.css', './dist/wypst.min.css');
