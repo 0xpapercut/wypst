@@ -1,5 +1,7 @@
-import init, { parseTree as _parseTree, typstContentTree } from './core';
-import utils from './utils';
+import init, { parseTree as _parseTree, typstContentTree } from './src/core/pkg';
+import utils from './src/utils';
+
+import wasm from './src/core/pkg/core_bg.wasm';
 
 function parseTree(expression, settings) {
     expression = expression.trim().replace(/\n/g, ' ');
@@ -39,10 +41,27 @@ function renderToString(expression, options) {
     return markup;
 }
 
+function initialize() {
+    init(wasm);
+}
+
+function debug() {
+    console.log(wasm.slice(10, 100));
+}
+
 export default {
     render,
     renderToString,
     parseTree,
     init,
     __typstContentTree: typstContentTree,
+};
+
+export {
+    render,
+    renderToString,
+    parseTree,
+    init,
+    initialize,
+    debug,
 };

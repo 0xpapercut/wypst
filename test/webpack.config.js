@@ -22,7 +22,6 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                exclude: /node_modules\/(?!katex)/,
                 use: {
                     loader: 'babel-loader',
                     options: {
