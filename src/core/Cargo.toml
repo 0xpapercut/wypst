@@ -27,7 +27,8 @@ log = "0.4.20"
 wasm-bindgen-test = "0.3.34"
 
 [profile.release]
-opt-level = "s"
+opt-level = "z"
+lto = true
 
 [lib.metadata.wasm-pack.profile.release]
 wasm-opt = ["-Oz"]
