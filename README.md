@@ -2,27 +2,28 @@
 Typst math typesetting for the web.
 
 ## Usage
-You can load this library either by using a script tag (preferred), or installing it with npm (for advanced usage).
+You can load this library either by using a script tag, or installing it with npm.
 
-### Option 1: Script tag
-This is simplest way to load, and looks very similar to how you go about it with KaTeX. This is the preferred and simplest method.
-
+### Script tag (simple usage)
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/wypst@0.0.5/dist/wypst.min.css" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/wypst@0.0.5/dist/wypst.min.js" crossorigin="anonymous"></script>
+
+<script>
+    wypst.initialize();
+    wypst.renderToString(); // Test it out!
+</script>
 ```
 
 Keep in mind that the javascript file is 17M, so if your internet is slow it might take some seconds to load.
 
-### Option 2: npm package
-Sometimes having the wasm inlined in the script file is incovenient. When this is the case, you will have to install the package with npm.
-
+### npm package (advanced usage)
+If having the wasm inlined directly is an incovenience, install the npm package
 ```bash
 npm install wypst
 ```
 
 You may then load the wasm binary
-
 ```
 import wypst from 'wypst';
 import wasm from 'wypst/dist/wypst.wasm';
