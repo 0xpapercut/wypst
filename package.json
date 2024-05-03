@@ -18,6 +18,7 @@
     "transpiler",
     "math"
   ],
+  "type": "module",
   "author": "0xpapercut",
   "license": "MIT",
   "devDependencies": {
