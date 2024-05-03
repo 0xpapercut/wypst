@@ -19,15 +19,15 @@ esbuild.build({
     },
 });
 
-// Normal build
+// Main build
 esbuild.build({
     entryPoints: [entryPoint],
     bundle: true,
-    minify: !isDevelopment,
+    minify: false,
     sourcemap: isDevelopment,
     target: ['es6'],
     outfile: './dist/wypst.js',
-    format: 'iife',
+    format: 'esm',
     globalName: 'wypst',
     loader: {
         '.wasm': 'file'
