@@ -3,14 +3,13 @@
   "version": "0.0.5",
   "description": "Typst math typesetting for the web.",
   "scripts": {
-    "scripts": "webpack --config=scripts.config.js",
-    "build-wasm": "cd src/core && wasm-pack build --target web",
-    "build-dev": "npm run build-wasm-dev && npm run build-katex",
-    "build": "npm run build-wasm && "
+    "scripts": "webpack --config=scripts.config.js"
   },
   "main": "dist/wypst.js",
   "files": [
     "wypst.js",
+    "src/utils.js",
+    "src/core/pkg/",
     "dist/"
   ],
   "keywords": [
@@ -44,16 +43,14 @@
     "html-webpack-plugin": "^5.5.3",
     "isolated-vm": "^4.6.0",
     "json-formatter-js": "^2.3.4",
-    "katex": "^0.16.9",
+    "katex": "^0.16.10",
     "puppeteer": "^21.5.1",
     "rollup": "^4.14.3",
     "style-loader": "^3.3.4",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^4.15.1",
-    "webpack-shell-plugin-next": "^2.3.1"
-  },
-  "dependencies": {
+    "webpack-shell-plugin-next": "^2.3.1",
     "esbuild-plugin-copy": "^2.1.1"
   }
 }
