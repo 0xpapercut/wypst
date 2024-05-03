@@ -4,22 +4,14 @@
   "description": "Typst math typesetting for the web.",
   "scripts": {
     "scripts": "webpack --config=scripts.config.js",
-    "build-wasm-dev": "cd src/core && wasm-pack build --target web --dev",
     "build-wasm": "cd src/core && wasm-pack build --target web",
-    "build-katex": "cd src/katex && webpack",
     "build-dev": "npm run build-wasm-dev && npm run build-katex",
-    "build": "npm run build-wasm && npm run build-katex",
-    "dev": "npm run build-dev && cd test && webpack serve"
+    "build": "npm run build-wasm && "
   },
-  "main": "wypst.js",
-  "module": "wypst.js",
+  "main": "dist/wypst.js",
   "files": [
     "wypst.js",
-    "katex.js",
-    "core/core_bg.js",
-    "core/core_bg.wasm",
-    "core/core.js",
-    "core/package.json"
+    "dist/"
   ],
   "keywords": [
     "typst",
