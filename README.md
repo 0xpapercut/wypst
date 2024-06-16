@@ -6,8 +6,6 @@ I feel like there's something like 20% of work left to get Wypst in a more stabl
 
 There's still no conclusive roadmap for native HTML export in Typst, and because this project gained some traction, I'll make a commitment to complete all unimplemented functionality, fix issues, and add whatever is needed to achieve equivalency of `obsidian-wypst` to `obsidian-typst`.
 
-To do so, from June 6th on, I'll be working solely on this, during a whole week.
-
 ## Usage
 You can load this library either by using a script tag, or installing it with npm.
 
